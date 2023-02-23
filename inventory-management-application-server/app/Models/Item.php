@@ -38,6 +38,17 @@ class Item extends Model
         }
     }
 
+    public static function updateItem($validated, $item): self
+    {
+        try {
+            $item->fill($validated,);
+            $item->save();
+            return $item;
+        } catch (Exception $e) {
+            throw new Exception( $e->getMessage());
+        }
+    }
+
     public function product(){
         return $this->belongsTo(Product::class, 'product_id');
     }

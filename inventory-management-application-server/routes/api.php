@@ -24,9 +24,11 @@ Route::group(['prefix' => 'v1.0.0'], function () {
         Route::patch('/product/{id}', [ProductController::class, 'updateProduct']);
         Route::delete('/product/{id}', [ProductController::class, 'deleteProduct']);
 
+        Route::get('/searched-items/{product_id}', [ItemController::class, 'searchItemsBySerialNumber']);
         Route::get('/items/{product_id}', [ItemController::class, 'getItemsByProduct']);
         Route::post('/items', [ItemController::class, 'addNewItems']);
         Route::delete('/item/{id}', [ItemController::class, 'deleteItem']);
+        Route::patch('/item/{id}', [ItemController::class, 'updateItem']);
 
         
        

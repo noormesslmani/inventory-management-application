@@ -100,7 +100,7 @@ class ItemController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Product deleted',
+                'message' => 'Item deleted',
             ], 200);
         } 
         catch (ActionForbiddenException $e) {
@@ -112,5 +112,73 @@ class ItemController extends Controller
         catch (Exception $e) {
             return response()->json($e->errors(), 500);
         } 
+    }
+
+    public function searchItemsBySerialNumber(Request $request, $product_id){
+        try{
+            //check if product exits in the database
+            $product=$this->findProduct($product_id);
+
+            //check if user is authorized to access the product
+            $this->authorizeProduct($product_id);
+
+            //serial number sent as query parameter
+            $serial_number=$request->query('serial_number');
+            
+            //query items correspoding to a product by serial number
+            $items= $product
+            ->items()
+            ->where('serial_number', $serial_number)
+            ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data'=>$items,
+            ], 200);
+        }
+        catch (ActionForbiddenException $e) {
+            return response()->json(['status' => 'fail','message' => 'Action forbidden'], 403);
+        }
+        catch (NotFoundException $e) {
+            return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
+        } 
+        catch (Exception $e) {
+            return response()->json($e->errors(), 500);
+        }
+    }
+
+    public function updateItem(Request $request, $id){
+        
+        try {
+            //validate request
+            $itemValidators = new ItemValidators();
+            $validated = $itemValidators-> validateUpdateItemsRequest($request);
+
+            //check if item exits in the database
+            $item=$this->findItem($id);
+
+            //check if user is authorized to update the item
+            $this->authorizeProduct($item->product_id);
+
+            //updating the item
+            $updatedItem=Item::updateItem($validated, $item);
+
+            return response()->json([
+                'status' => 'success',
+                'data'=>$updatedItem
+            ], 200);
+        } 
+        catch (ValidationException $e) {
+            return response()->json($e->errors(), 422);
+        }
+        catch (ActionForbiddenException $e) {
+            return response()->json(['status' => 'fail','message' => 'Action forbidden'], 403);
+        }
+        catch (NotFoundException $e) {
+            return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
+        } 
+        catch (Exception $e) {
+            return response()->json($e->errors(), 500);
+        }  
     }
 }
