@@ -10,7 +10,6 @@ use App\Validators\ProductValidators;
 use Illuminate\Validation\ValidationException;
 use App\Exceptions\ActionForbiddenException;
 use App\Exceptions\ConflictException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use JWTAuth;
 use App\Exceptions\NotFoundException;
 use App\Http\Resources\Product as ProductResource;
@@ -81,6 +80,9 @@ class ProductController extends Controller
             $productValidators = new ProductValidators();
             $validated = $productValidators-> validateUpdateProductRequest($request);
 
+            //check if product exits in the database
+            $product=$this->findProduct($id);
+
             //check if user is authorized to update the product
             $this->authorizeProduct($id);
             
@@ -89,7 +91,7 @@ class ProductController extends Controller
                 $this->checkExistingProductType($request->type);
 
             //update the product
-            $updatedProduct= Product::updateProduct($validated,$id);
+            $updatedProduct= Product::updateProduct($validated,$product);
 
             return response()->json([
                 'status' => 'success',
@@ -102,8 +104,8 @@ class ProductController extends Controller
         catch (ActionForbiddenException $e) {
             return response()->json(['status' => 'fail','message' => 'Action forbidden'], 403);
         }
-        catch (ModelNotFoundException $e) {
-            return response()->json($e->errors(), 404);
+        catch (NotFoundException $e) {
+            return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
         }
         catch (Exception $e) {
             return response()->json($e->errors(), 500);
@@ -142,7 +144,7 @@ class ProductController extends Controller
     public function searchProductsByType(Request $request){
         try{
             $type=$request->query('type');
-            
+
             $products=Auth::user()
             ->products()
             ->withCount('unsoldItems')

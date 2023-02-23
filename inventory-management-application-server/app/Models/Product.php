@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Item;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Exceptions\NotFoundException;
 class Product extends Model
 {
     use HasFactory;
@@ -32,13 +32,9 @@ class Product extends Model
         }
     }
 
-    public static function updateProduct($validated, $id, $image_path=null): self
+    public static function updateProduct($validated, $product, $image_path=null): self
     {
         try {
-            $product= self::find($id);
-            if (!$product) {
-                throw new ModelNotFoundException( $e->getMessage());
-            }
             $product->fill(array_merge(
                 $validated,
                 [
