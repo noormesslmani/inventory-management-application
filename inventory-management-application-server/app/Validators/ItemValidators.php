@@ -20,6 +20,16 @@ class ItemValidators
         return $validator->validated();     
     }
 
-    
+    public function validateUpdateItemsRequest(Request $request){
+        
+        $validator = Validator::make($request->all(), [
+            'serial_number' => 'string|min:10',
+            'is_sold' => 'boolean', 
+        ]);
+        if($validator->fails()){
+            throw new ValidationException($validator);
+        }  
+        return $validator->validated();     
+    }
 
 }
