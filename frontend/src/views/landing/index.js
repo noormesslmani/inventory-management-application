@@ -23,17 +23,18 @@ const Landing=()=>{
         navigate('/products');
       }
       catch (error){
+        console.log(error)
         toast.error(error.response.data.message);
       }
     }
 
     const handleRegister=async()=>{
         try{
-          const res=await createAccount({
+          const res =await createAccount({
             email:registerEmail, 
             password: registerPassword, 
-            firstName, 
-            lastName});
+            first_name:firstName, 
+            last_name:lastName});
             toast.success('Account successfully created!');;
         }
         catch (error){
@@ -70,6 +71,7 @@ const Landing=()=>{
             setEmail={setRegisterEmail}
             setPassword={setRegisterPassword}
             setConfirmPassword={setConfirmPassword}
+            handleRegister={handleRegister}
             />
             }
             
