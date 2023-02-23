@@ -19,17 +19,6 @@ class Item extends Model
         'product_id',
     ];
 
-    public static function queryItemsByProduct($product_id): Collection
-    {
-        try {
-            return self::where('product_id', $product_id)
-            ->orderBy('is_sold')
-            ->get();
-          
-        } catch (Exception $e) {
-            throw new Exception( $e->getMessage());
-        }
-    }
 
     public static function createACollectionOfItems($items, $product_id): void
     {

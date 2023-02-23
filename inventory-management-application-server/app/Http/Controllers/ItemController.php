@@ -29,7 +29,7 @@ class ItemController extends Controller
             $this->authorizeProduct($product_id);
 
             //query collections of items coressponding to current product
-            $items= Item:: queryItemsByProduct($product_id);
+            $items= Product::find($product_id)->items()->get();
 
 
             return response()->json([
