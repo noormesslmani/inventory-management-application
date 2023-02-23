@@ -18,18 +18,6 @@ class Product extends Model
         'owner_id',
     ];
 
-    public static function queryProductsByOwner($owner_id): Collection
-    {
-        try {
-            return self::where('owner_id', $owner_id)
-            ->withCount('unsoldItems')
-            ->get();
-          
-        } catch (Exception $e) {
-            throw new Exception( $e->getMessage());
-        }
-    }
-
     public static function createProduct($validated, $id, $image_path): self
     {
         try {

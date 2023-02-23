@@ -24,8 +24,7 @@ class ProductController extends Controller
     public function getProductsByOwner(){
         
         try {
-            //query the collection of products correspoding to current user
-            $products= Product:: queryProductsByOwner(Auth::user()->id);
+            $products= Auth::user()->products()->get();
 
             return response()->json([
                 'status' => 'success',
