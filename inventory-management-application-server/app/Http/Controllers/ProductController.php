@@ -24,7 +24,10 @@ class ProductController extends Controller
     public function getProductsByOwner(){
         
         try {
-            $products= Auth::user()->products()->get();
+            $products= Auth::user()
+            ->products()
+            ->withCount('unsoldItems')
+            ->get();
 
             return response()->json([
                 'status' => 'success',
@@ -134,6 +137,27 @@ class ProductController extends Controller
             return response()->json($e->errors(), 500);
         }
 
+    }
+
+    public function searchProductsByType(Request $request){
+        try{
+            $type=$request->query('type');
+            
+            $products=Auth::user()
+            ->products()
+            ->withCount('unsoldItems')
+            ->where('type', 'LIKE', '%'.$type.'%')
+            ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => ProductResource::collection($products),
+            ], 200);
+        }
+        catch (Exception $e) {
+            return response()->json($e->errors(), 500);
+        }
+        
     }
 
     

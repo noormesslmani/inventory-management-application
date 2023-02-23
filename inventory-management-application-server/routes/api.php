@@ -19,6 +19,7 @@ Route::group(['prefix' => 'v1.0.0'], function () {
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/products', [ProductController::class, 'getProductsByOwner']);
+        Route::get('/searched-products', [ProductController::class, 'searchProductsByType']);
         Route::post('/product', [ProductController::class, 'addNewProduct']);
         Route::patch('/product/{id}', [ProductController::class, 'updateProduct']);
         Route::delete('/product/{id}', [ProductController::class, 'deleteProduct']);
