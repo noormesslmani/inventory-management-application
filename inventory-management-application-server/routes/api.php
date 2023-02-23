@@ -11,6 +11,10 @@ Route::group(['prefix' => 'v1.0.0'], function () {
     Route::group(['prefix' => 'auth'], function ($router) {
         Route::post('/register', [AuthController::class, 'register']); 
         Route::post('/login', [AuthController::class, 'login']); 
+
+        Route::group(['middleware' => 'auth:api'], function () {
+            Route::get('/logout', [AuthController::class, 'logout']);
+        });
     }); 
 
     Route::group(['middleware' => 'auth:api'], function () {
@@ -22,6 +26,8 @@ Route::group(['prefix' => 'v1.0.0'], function () {
         Route::get('/items/{product_id}', [ItemController::class, 'getItemsByProduct']);
         Route::post('/items', [ItemController::class, 'addNewItems']);
         Route::delete('/item/{id}', [ItemController::class, 'deleteItem']);
+
+        
        
     });
 
