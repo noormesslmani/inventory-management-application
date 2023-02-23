@@ -18,9 +18,11 @@ class AuthController extends Controller
     public function register(Request $request){
         try {
 
+            //validate request
             $authValidators = new AuthValidators();
             $validated = $authValidators-> validateRegisterRequest($request);
         
+            //create user
             $newUser= User::createUser(
                 $validated, 
                 $request->password, 
@@ -42,9 +44,11 @@ class AuthController extends Controller
     public function login(Request $request){
         try {
 
+            //validate request
             $authValidators = new AuthValidators();
             $validated = $authValidators-> validateLoginRequest($request);
         
+            //check credentials and create token
             if (! $token = auth()->attempt($validated)) {
                 return response()->json(['status' => 'fail','message' => 'Unauthorized'], 401);
             }

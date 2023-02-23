@@ -12,6 +12,7 @@ use App\Exceptions\ActionForbiddenException;
 use App\Exceptions\ConflictException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use JWTAuth;
+use App\Exceptions\NotFoundException;
 use App\Http\Resources\Product as ProductResource;
 use App\Traits\ProductTrait;
 
@@ -23,6 +24,7 @@ class ProductController extends Controller
     public function getProductsByOwner(){
         
         try {
+            //query the collection of products correspoding to current user
             $products= Product:: queryProductsByOwner(Auth::user()->id);
 
             return response()->json([
@@ -38,18 +40,16 @@ class ProductController extends Controller
 
     public function addNewProduct(Request $request){
         try {
-           
+            //validate request
             $productValidators = new ProductValidators();
             $validated = $productValidators-> validateAddProductRequest($request);
-            
+
+            //check if product type already exists for current user
             $this->checkExistingProductType($request->type);
 
             $image_path='no-image.png';
 
-            // if($request->base_64){
-            //     $image_path= $productService->decodeImage($request->base64_image, $request->extension);
-            // }
-
+            //create a new product
             $newProduct= Product::createProduct(
                 $validated, 
                 Auth::User()->id, 
@@ -75,15 +75,18 @@ class ProductController extends Controller
     public function updateProduct(Request $request, $id){
         
         try {
+            //validate request
             $productValidators = new ProductValidators();
             $validated = $productValidators-> validateUpdateProductRequest($request);
 
+            //check if user is authorized to update the product
             $this->authorizeProduct($id);
             
+            //check if requested type alreay exists for current user
             if($request->type)
                 $this->checkExistingProductType($request->type);
 
-
+            //update the product
             $updatedProduct= Product::updateProduct($validated,$id);
 
             return response()->json([
@@ -107,15 +110,13 @@ class ProductController extends Controller
 
     public function deleteProduct($id){
         try {
+            //check if product exits in the database
+            $product=$this->findProduct($product_id);
 
-            $product = Product::find($id);
-
-            if (!$product) {
-                return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
-            }
-
+            //check if user is authorized to update the product
             $this->authorizeProduct($id);
 
+            //delete product
             $product->delete();
 
 
@@ -127,9 +128,13 @@ class ProductController extends Controller
         catch (ActionForbiddenException $e) {
             return response()->json(['status' => 'fail','message' => 'Action forbidden'], 403);
         }
+        catch (NotFoundException $e) {
+            return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
+        }
         catch (Exception $e) {
             return response()->json($e->errors(), 500);
-        } 
+        }
+
     }
 
     

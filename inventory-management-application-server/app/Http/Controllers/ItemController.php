@@ -14,23 +14,23 @@ use JWTAuth;
 use App\Http\Resources\ItemCollection;
 use App\Validators\ItemValidators;
 use App\Traits\ProductTrait;
+use App\Traits\ItemTrait;
+use App\Exceptions\NotFoundException;
 class ItemController extends Controller
 {
-    use ProductTrait;
+    use ProductTrait, ItemTrait;
     public function getItemsByProduct($product_id){
         
         try {
-            $product = Product::find($product_id);
+            //check if product exits in the database
+            $product=$this->findProduct($product_id);
 
-            if (!$product) {
-                return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
-            }
-
+            //check if user is authorized to have access to the product
             $this->authorizeProduct($product_id);
 
+            //query collections of items coressponding to current product
             $items= Item:: queryItemsByProduct($product_id);
 
-            
 
             return response()->json([
                 'status' => 'success',
@@ -40,6 +40,9 @@ class ItemController extends Controller
         catch (ActionForbiddenException $e) {
             return response()->json(['status' => 'fail','message' => 'Action forbidden'], 403);
         } 
+        catch (NotFoundException $e) {
+            return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
+        } 
         catch (Exception $e) {
             return response()->json($e->errors(), 500);
         }  
@@ -48,18 +51,20 @@ class ItemController extends Controller
     public function addNewItems(Request $request){
         
         try {
+            //validate request
             $itemValidators = new ItemValidators();
             $validated = $itemValidators-> validateAddItemsRequest($request);
             
+            
             $product_id=$request->product_id;
-            $product = Product::find($product_id);
 
-            if (!$product) {
-                return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
-            }
+            //check if product exits in the database
+            $product=$this->findProduct($product_id);
 
+            //check if user is authorized to have access to the product
             $this->authorizeProduct($product_id);
 
+            //create the requestion collection of items 
             Item::createACollectionOfItems($request->items, $product_id);
 
             return response()->json([
@@ -69,6 +74,9 @@ class ItemController extends Controller
         catch (ValidationException $e) {
             return response()->json($e->errors(), 422);
         }
+        catch (NotFoundException $e) {
+            return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
+        } 
         catch (ActionForbiddenException $e) {
             return response()->json(['status' => 'fail','message' => 'Action forbidden'], 403);
         }
@@ -80,14 +88,13 @@ class ItemController extends Controller
     public function deleteItem($id){
         try {
 
-            $item = Item::find($id);
+            //check if item exits in the database
+            $item=$this->findItem($id);
 
-            if (!$item) {
-                return response()->json(['status' => 'fail','message' => 'Item not found'], 404);
-            }
-
+            //check if user is authorized to delete the item
             $this->authorizeProduct($item->product_id);
 
+            //delete the item
             $item->delete();
 
 
@@ -99,6 +106,9 @@ class ItemController extends Controller
         catch (ActionForbiddenException $e) {
             return response()->json(['status' => 'fail','message' => 'Action forbidden'], 403);
         }
+        catch (NotFoundException $e) {
+            return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
+        } 
         catch (Exception $e) {
             return response()->json($e->errors(), 500);
         } 
