@@ -43,6 +43,7 @@ const RegisterFormFirst=({setFormType, firstName, lastName, setFirstName, setLas
                 placeholder="John"  
                 value={firstName}
                 onChange={(e)=>setFirstName(e.target.value)}
+                isInvalid={firstName?.length<=1}
                 />
                 <Form.Control.Feedback type="invalid">
                     Please enter a valid first name.
@@ -57,6 +58,7 @@ const RegisterFormFirst=({setFormType, firstName, lastName, setFirstName, setLas
                 placeholder="Smith" 
                 value={lastName}
                 onChange={(e)=>setLastName(e.target.value)}
+                isInvalid={lastName?.length<=1}
                 />
                 <Form.Control.Feedback type="invalid">
                     please enter a valid last name.

@@ -6,16 +6,17 @@ import Button from '../buttons/button';
 const LogInForm=({setFormType, email, password, setEmail, setPassword, handleLogin})=> {
   const [validated, setValidated] = useState(false);
   const [isLaoding, setIsLaoing]= useState(false);
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     const form = event.currentTarget;
+    setValidated(true);
     event.preventDefault();
     if (form.checkValidity() === false) {
       event.stopPropagation();
     }
     else{
-      handleLogin();
+      await handleLogin();
     }
-    setValidated(true);
+   
     setTimeout(() => {
         setValidated(false);
     }, "2000")
@@ -50,6 +51,7 @@ const LogInForm=({setFormType, email, password, setEmail, setPassword, handleLog
                 placeholder="Password" 
                 value={password} 
                 onChange={(e)=> setPassword(e.target.value)}
+                isInvalid={password?.length<8}
                 />
                 <Form.Control.Feedback type="invalid">
                     Password must be atleast 8 characters long

@@ -3,23 +3,24 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from '../buttons/button';
 
-const RegisterFormSecond=({setFormType, email, password, confirmPassword, setEmail, setPassword, setConfirmPassword})=> {
+const RegisterFormSecond=({setFormType, email, password, confirmPassword, setEmail, setPassword, setConfirmPassword, handleRegister})=> {
   const [validated, setValidated] = useState(false);
 
-  const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    setValidated(true);
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-      setTimeout(() => {
-          setValidated(false);
-      }, "2000")
-    }
-    else{
-        setFormType('')
-    }
-  };
+  const handleSubmit = async (event) => {
+        const form = event.currentTarget;
+        setValidated(true);
+        event.preventDefault();
+        if (form.checkValidity() === false) {
+        event.stopPropagation();
+        setTimeout(() => {
+            setValidated(false);
+        }, "2000")
+        }
+        else{
+            console.log('hi')
+            await handleRegister();
+        }
+    };
     const handleBack=(e)=>{
         e.preventDefault();
         setFormType('registerfirst');
@@ -52,6 +53,7 @@ const RegisterFormSecond=({setFormType, email, password, confirmPassword, setEma
                 placeholder="Password"
                 value={password}
                 onChange={(e)=>setPassword(e.target.value)} 
+                isInvalid={password?.length<8}
                 />
                 <Form.Control.Feedback type="invalid">
                     Password must be atleast 8 characters long
@@ -66,6 +68,7 @@ const RegisterFormSecond=({setFormType, email, password, confirmPassword, setEma
                 placeholder="Password"
                 value={confirmPassword}
                 onChange={(e)=>setConfirmPassword(e.target.value)}  
+                isInvalid={confirmPassword!=password}
                 />
                 <Form.Control.Feedback type="invalid">
                     Passwords do not match
