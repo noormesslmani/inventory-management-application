@@ -15,8 +15,8 @@ class UserService
         $code64 = explode(',', $image_64);
         $decoded_img = base64_decode($code64[1]);
         $extension = explode(";", explode('/', $code64[0])[1])[0];
-        $path = uniqid() . "." . $extension;
-        file_put_contents($path, $decoded_img);
+        $path =  uniqid() . "." . $extension;
+        file_put_contents('images/' . $path, $decoded_img);
         return $path;
     }
 

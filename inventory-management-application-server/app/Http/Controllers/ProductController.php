@@ -27,6 +27,7 @@ class ProductController extends Controller
             $products= Auth::user()
             ->products()
             ->withCount('unsoldItems')
+            ->latest()
             ->paginate(10);
 
 
@@ -47,11 +48,19 @@ class ProductController extends Controller
             //validate request
             $productValidators = new ProductValidators();
             $validated = $productValidators-> validateAddProductRequest($request);
+          
+            if($request->base64_image !=''){
+                $userService= new UserService();
+                $image_path= $userService->decodeImage($request->base64_image);
+            }
+            else{
+                $image_path='no-image.png';
+            }
 
             //check if product type already exists for current user
             $this->checkExistingProductType($request->type);
 
-            $image_path='no-image.png';
+            
 
             //create a new product
             $newProduct= Product::createProduct(
@@ -62,7 +71,7 @@ class ProductController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data'=>$newProduct,
+                'data'=>new ProductResource($newProduct),
             ], 200);
         } 
         catch (ValidationException $e) {
@@ -93,12 +102,21 @@ class ProductController extends Controller
             if($request->type)
                 $this->checkExistingProductType($request->type);
 
+            
+
+            if($request->base64_image ){
+                $userService= new UserService();
+                $image_path= $userService->decodeImage($request->base64_image);
+
+            }
+            else $image_path=null;
+            
             //update the product
-            $updatedProduct= Product::updateProduct($validated,$product);
+            $updatedProduct= Product::updateProduct($validated,$product, $image_path);
 
             return response()->json([
                 'status' => 'success',
-            
+                'data'=> new ProductResource($updatedProduct)
             ], 200);
         } 
         catch (ValidationException $e) {
@@ -110,6 +128,9 @@ class ProductController extends Controller
         catch (NotFoundException $e) {
             return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
         }
+        catch (ConflictException $e) {
+            return response()->json(['status' => 'fail','message' => 'Product type already exist'], 409);
+        }
         catch (Exception $e) {
             return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         }  
@@ -118,7 +139,7 @@ class ProductController extends Controller
     public function deleteProduct($id){
         try {
             //check if product exits in the database
-            $product=$this->findProduct($product_id);
+            $product=$this->findProduct($id);
 
             //check if user is authorized to update the product
             $this->authorizeProduct($id);
@@ -152,7 +173,8 @@ class ProductController extends Controller
             ->products()
             ->withCount('unsoldItems')
             ->where('type', 'LIKE', '%'.$type.'%')
-            ->get();
+            ->latest()
+            ->paginate(10);
 
             return response()->json([
                 'status' => 'success',
