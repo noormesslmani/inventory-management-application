@@ -37,3 +37,13 @@ export async function deleteAProduct(id){
   return response(config)
 }
 
+export async function editAProduct(data, id){
+
+  const config = {
+      method: "patch",
+      data,
+      url:`${baseURL}/product/${id}`,
+    }
+  return response(config)
+}
+
