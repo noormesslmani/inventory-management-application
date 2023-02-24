@@ -20,10 +20,13 @@ const Landing=()=>{
     const handleLogin=async()=>{
       try{
         const res=await login({email:loginEmail, password: loginPassword});
+        console.log(res)
+        localStorage.setItem('user', JSON.stringify(res.user));
+        localStorage.setItem('token', res.authorisation.token);
         navigate('/products');
       }
       catch (error){
-        console.log(error)
+    
         toast.error(error.response.data.message);
       }
     }
