@@ -20,3 +20,20 @@ export async function searchProductsByType(type){
     return response(config)
 }
 
+export async function createNewProduct(data){
+    const config = {
+        method: "post",
+        data,
+        url:`${baseURL}/product`,
+      }
+    return response(config)
+}
+
+export async function deleteAProduct(id){
+  const config = {
+      method: "delete",
+      url:`${baseURL}/product/${id}`,
+    }
+  return response(config)
+}
+
