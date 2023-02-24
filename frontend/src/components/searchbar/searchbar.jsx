@@ -1,7 +1,12 @@
 import React from 'react';
 import Button from '../buttons/button';
-const SearchBar = ({searchQuery, setSearchQuery}) => (
-    <form onSubmit={null} method='get' className='w-full flex justify-between h-full items-end '>
+const SearchBar = ({searchQuery, setSearchQuery, searchProducts}) => {
+    const handleSubmit=(e)=>{
+        e.preventDefault();
+        searchProducts();
+    }
+    return(
+    <form onSubmit={handleSubmit} method='get' className='w-full flex justify-between h-full items-end '>
         <div className='flex flex-col gap-y-3 w-1/2'>
             <label htmlFor="header-search">
                 <span className="text-xl text-secondary-color font-semibold">Search products</span>
@@ -16,6 +21,7 @@ const SearchBar = ({searchQuery, setSearchQuery}) => (
         </div>
         <Button label='Search' type='submit' styles='bg-secondary-color text-white text-xl h-12' />
     </form>
-);
+    )
+};
 
 export default SearchBar;

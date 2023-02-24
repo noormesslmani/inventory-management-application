@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import Button from '../../components/buttons/button';
 import NavBar from '../../components/navbar/navbar';
 import SearchBar from '../../components/searchbar/searchbar';
-import { getProductsByPage } from '../../api/product';
+import { getProductsByPage, searchProductsByType } from '../../api/product';
 import Paginate from '../../components/pagination/pagination';
 import Spinner from 'react-bootstrap/Spinner';
 const Products=()=>{
@@ -34,6 +34,23 @@ const Products=()=>{
             setIsloading(false);
         }
     }
+
+    const searchProducts=async()=>{
+        setIsloading(true);
+        try{
+            const res=await searchProductsByType(searchQuery);
+            setCurrentPage(1);
+            setProducts(res.data.products);
+            
+        }
+        catch (error){
+      
+            toast.error(error.response.data.message);
+        }
+        finally{
+            setIsloading(false);
+        }
+    }
   
     return(
         <div className='w-screen min-h-screen flex box-border'>
@@ -44,7 +61,7 @@ const Products=()=>{
                     <Button label='New Product' handleClick={null} styles='bg-secondary-color text-lg font-medium' />
                 </div>
                 <div className='w-full flex flex-col p-3 box-border justify-between  rounded-lg h-32 bg-white drop-shadow-lg'>
-                    <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                    <SearchBar searchProducts={searchProducts} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
                 </div>
                 <div className='w-full flex flex-1 flex-col p-3 box-border rounded-lg bg-white drop-shadow-lg'>
                     <div className='flex justify-between items-center w-full'>

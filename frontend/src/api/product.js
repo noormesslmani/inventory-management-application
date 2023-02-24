@@ -11,3 +11,12 @@ export async function getProductsByPage(page){
     return response(config)
 }
 
+export async function searchProductsByType(type){
+    const config = {
+        method: "get",
+        params:{type},
+        url:`${baseURL}/searched-products`,
+      }
+    return response(config)
+}
+
