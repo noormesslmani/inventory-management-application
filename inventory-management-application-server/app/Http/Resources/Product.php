@@ -12,8 +12,9 @@ class Product extends JsonResource
         return [
             'id' => $this->id,
             'type'=>$this->type,
+            'description'=>$this->description,
             'image'=>$this->image,
-            'count'=>$this->unsold_items_count,
+            'count'=>$this->unsold_items_count??$this->unsoldItems()->count(),
         ];
     }
 }
