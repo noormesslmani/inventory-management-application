@@ -32,15 +32,13 @@ class Product extends Model
         }
     }
 
-    public static function updateProduct($validated, $product, $image_path=null): self
+    public static function updateProduct($validated, $product, $image_path): self
     {
         try {
-            $product->fill(array_merge(
-                $validated,
-                [
-                    $image_path ? ['image' => $image_path] : []
-                ]
-            ));
+            if ($image_path) {
+                $validated['image'] = $image_path;
+            }
+            $product->fill($validated);
             $product->save();
             return $product;
         } catch (Exception $e) {
