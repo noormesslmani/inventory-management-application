@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\ActionForbiddenException;
 use App\Exceptions\ConflictException;
 use JWTAuth;
-use App\Http\Resources\ItemCollection;
+use App\Http\Resources\ItemPagination;
 use App\Validators\ItemValidators;
 use App\Traits\ProductTrait;
 use App\Traits\ItemTrait;
@@ -29,12 +29,12 @@ class ItemController extends Controller
             $this->authorizeProduct($product_id);
 
             //query collections of items coressponding to current product
-            $items= Product::find($product_id)->items()->get();
+            $items= Product::find($product_id)->items()->paginate(15);
 
 
             return response()->json([
                 'status' => 'success',
-                'data'=>new ItemCollection($items),
+                'data'=>new ItemPagination($items),
             ], 200);
         } 
         catch (ActionForbiddenException $e) {
@@ -44,7 +44,7 @@ class ItemController extends Controller
             return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
         } 
         catch (Exception $e) {
-            return response()->json($e->errors(), 500);
+            return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         }  
     }
 
@@ -72,7 +72,7 @@ class ItemController extends Controller
             ], 201);
         } 
         catch (ValidationException $e) {
-            return response()->json($e->errors(), 422);
+            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
         }
         catch (NotFoundException $e) {
             return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
@@ -81,7 +81,7 @@ class ItemController extends Controller
             return response()->json(['status' => 'fail','message' => 'Action forbidden'], 403);
         }
         catch (Exception $e) {
-            return response()->json($e->errors(), 500);
+            return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         }  
     }
 
@@ -110,7 +110,7 @@ class ItemController extends Controller
             return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
         } 
         catch (Exception $e) {
-            return response()->json($e->errors(), 500);
+            return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         } 
     }
 
@@ -129,7 +129,7 @@ class ItemController extends Controller
             $items= $product
             ->items()
             ->where('serial_number', $serial_number)
-            ->get();
+            ->paginate(15);
 
             return response()->json([
                 'status' => 'success',
@@ -143,7 +143,7 @@ class ItemController extends Controller
             return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
         } 
         catch (Exception $e) {
-            return response()->json($e->errors(), 500);
+            return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         }
     }
 
@@ -169,7 +169,7 @@ class ItemController extends Controller
             ], 200);
         } 
         catch (ValidationException $e) {
-            return response()->json($e->errors(), 422);
+            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
         }
         catch (ActionForbiddenException $e) {
             return response()->json(['status' => 'fail','message' => 'Action forbidden'], 403);
@@ -178,7 +178,7 @@ class ItemController extends Controller
             return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
         } 
         catch (Exception $e) {
-            return response()->json($e->errors(), 500);
+            return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         }  
     }
 }

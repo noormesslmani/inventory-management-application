@@ -9,9 +9,10 @@ class ItemCollection extends ResourceCollection
     
     public function toArray($request)
     {
+        $items = $this->collection;
         return [
             'items' => $this->collection,
-            'product'=>$this->collection->first()->product
+            'product'=>$items[0]->product()
         ];
     }
 

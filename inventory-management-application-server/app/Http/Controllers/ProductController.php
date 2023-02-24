@@ -13,6 +13,7 @@ use App\Exceptions\ConflictException;
 use JWTAuth;
 use App\Exceptions\NotFoundException;
 use App\Http\Resources\Product as ProductResource;
+use App\Http\Resources\ProductPagination ;
 use App\Traits\ProductTrait;
 
 
@@ -26,16 +27,18 @@ class ProductController extends Controller
             $products= Auth::user()
             ->products()
             ->withCount('unsoldItems')
-            ->get();
+            ->paginate(10);
 
+
+            
             return response()->json([
                 'status' => 'success',
-                'data'=>ProductResource::collection($products),
+                'data'=>new ProductPagination($products),
             ], 200);
         } 
       
         catch (Exception $e) {
-            return response()->json($e->errors(), 500);
+            return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         }  
     }
 
@@ -63,13 +66,13 @@ class ProductController extends Controller
             ], 200);
         } 
         catch (ValidationException $e) {
-            return response()->json($e->errors(), 422);
+            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
         }
         catch (ConflictException $e) {
             return response()->json(['status' => 'fail','message' => 'Product type already exist'], 409);
         }
         catch (Exception $e) {
-            return response()->json($e->errors(), 500);
+            return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         } 
     }
 
@@ -99,7 +102,7 @@ class ProductController extends Controller
             ], 200);
         } 
         catch (ValidationException $e) {
-            return response()->json($e->errors(), 422);
+            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
         }
         catch (ActionForbiddenException $e) {
             return response()->json(['status' => 'fail','message' => 'Action forbidden'], 403);
@@ -108,7 +111,7 @@ class ProductController extends Controller
             return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
         }
         catch (Exception $e) {
-            return response()->json($e->errors(), 500);
+            return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         }  
     }
 
@@ -136,7 +139,7 @@ class ProductController extends Controller
             return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
         }
         catch (Exception $e) {
-            return response()->json($e->errors(), 500);
+            return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         }
 
     }
@@ -153,11 +156,11 @@ class ProductController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data' => ProductResource::collection($products),
+                'data' => new ProductPagination($products),
             ], 200);
         }
         catch (Exception $e) {
-            return response()->json($e->errors(), 500);
+            return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         }
         
     }

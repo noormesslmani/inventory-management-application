@@ -33,10 +33,10 @@ class AuthController extends Controller
             ], 201);
         } 
         catch (ValidationException $e) {
-            return response()->json($e->errors(), 422);
+            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
         }
         catch (Exception $e) {
-            return response()->json($e->errors(), 500);
+            return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         }  
         
     }
@@ -50,7 +50,7 @@ class AuthController extends Controller
         
             //check credentials and create token
             if (! $token = auth()->attempt($validated)) {
-                return response()->json(['status' => 'fail','message' => 'Unauthorized'], 401);
+                return response()->json(['status' => 'fail','message' => 'Account does not exist'], 401);
             }
 
             return response()->json([
@@ -63,10 +63,10 @@ class AuthController extends Controller
             ], 200);
         } 
         catch (ValidationException $e) {
-            return response()->json($e->errors(), 422);
+            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
         }
         catch (Exception $e) {
-            return response()->json($e->errors(), 500);
+            return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         }  
         
     }
