@@ -4,10 +4,10 @@ import { toast } from 'react-toastify';
 import Button from '../../components/buttons/button';
 import NavBar from '../../components/navbar/navbar';
 import SearchBar from '../../components/searchbar/searchbar';
-import { getProductsByPage, searchProductsByType, createNewProduct, deleteProduct, deleteAProduct } from '../../api/product';
+import { getProductsByPage, searchProductsByType, createNewProduct, deleteAProduct, editAProduct } from '../../api/product';
 import Paginate from '../../components/pagination/pagination';
 import Spinner from 'react-bootstrap/Spinner';
-import AddProductModal from '../../components/modals/addProductModal';
+import AddProductModal from '../../components/modals/productModal';
 import DeleteModal from '../../components/modals/deleteModal';
 const Products=()=>{
     
@@ -15,19 +15,45 @@ const Products=()=>{
     const [currentPage, setCurrentPage]=useState(1);
     const [totalPages, setTotalPages]=useState(null);
     const [products, setProducts]=useState([]);
-    const [isLoading, setIsloading]= useState(true);
 
-    const [ProducType, setProductType]= useState('');
-    const [ProductDescription, setProductDescription]= useState('');
-    const [base64Image, setBase64Image]= useState('');
+
+    const [isLoading, setIsloading]= useState(true);
+    const [isDeleting, setIsDeleting]= useState(false);
+    const [isSaving, setIsSaving]= useState(false);
+   
+    const [productProps, setProductProps]=useState(
+        {
+            type:'',
+            description:'',
+            defaultImage:'no-image.png',
+            image:null,
+            productToDelete:null,
+            productToEdit:null
+        }
+    )
+
+    //controlling modals display
     const [showPorductModal, setShowProductModal]= useState(false);
     const [showDeleteModal, setShowDeleteModal]= useState(false);
-    const [ProductToDeleteId, setProductToDeleteId]=useState(null);
-   
-    useEffect(()=>{
-        getProducts()
-    },[currentPage]);
+    
+    //reset props to initial values
+    const resetProps=()=>{
+        setProductProps({
+            type:'',
+            description:'',
+            defaultImage:'no-image.png',
+            image:null,
+            productToDelete:null,
+            productToEdit:null
+        });
+        setShowProductModal(false);
+        setShowDeleteModal(false);
+    }
 
+  
+    
+
+    //Query products on page change
     const getProducts=async()=>{
         setIsloading(true);
         try{
@@ -37,22 +63,25 @@ const Products=()=>{
             
         }
         catch (error){
-      
+    
             toast.error(error.response.data.message);
         }
         finally{
             setIsloading(false);
         }
     }
+    useEffect(()=>{
+        getProducts()
+    },[currentPage]);
 
+
+    //search products by type
     const searchProducts=async()=>{
         setIsloading(true);
         try{
             const res=await searchProductsByType(searchQuery);
             setCurrentPage(1);
             setProducts(res.data.products);
-            
-            
         }
         catch (error){
       
@@ -64,17 +93,25 @@ const Products=()=>{
     }
 
     
+    //check if the user wants to add or edit a product and handle the request
+    const handleSave=async()=>{
+        setIsSaving(true);
+        productProps.productToEdit? await editProduct(): await createProduct();
+        resetProps();
+        setIsSaving(false);  
+    }
 
-    const createAProduct=async()=>{
-        console.log(base64Image)
+
+    //creating a new product request
+    const createProduct=async()=>{
         try{
             const res=await createNewProduct({
-                type: ProducType, 
-                description: ProductDescription, 
-                base64_image: base64Image || ''});
+                type: productProps.type, 
+                description: productProps.description, 
+                base64_image: productProps.base64 || ''});
             
             if(currentPage==1){
-                const updatedProducts=[{...res.data, count:0},...products];
+                const updatedProducts=[res.data,...products];
                 setProducts(updatedProducts.slice(0, -1));
                 
             }
@@ -84,31 +121,67 @@ const Products=()=>{
       
             toast.error(error.response.data.message);
         }
-        finally{
-            setProductDescription('');
-            setProductType('');
-            setBase64Image(null);
+    }
+    
+    //editing a product request and checking which data are modified
+    const editProduct=async()=>{
+        try{
+            const res=await editAProduct({
+                ...(productProps.productToEdit.type!=productProps.type && { type: productProps.type}),
+                ...(productProps.productToEdit.description!=productProps.description && { description: productProps.description }),
+                ...(productProps.base64 && { base64_image: productProps.base64 })
+            }, productProps.productToEdit.id);
+           
+            console.log(productProps.base64)
+            const updatedProducts= products.map(product=>product==productProps.productToEdit? res.data: product);
+            setProducts(updatedProducts);
+            toast.success('product edited successfully');
+        }
+        catch (error){
+            toast.error(error.response.data.message);
+        }
+    }
 
+    //handle the click on edit product icon
+    const handleEditProductClick=(product)=>{
+        setProductProps(
+            {
+                type:product.type,
+                description:product.description,
+                defaultImage:product.image,
+                base64:null,
+                productToDelete:null,
+                productToEdit:product
+            }
+        )
+        setShowProductModal(true);
+    }
+
+    //handle the click on delete product icon
+    const handleDeleteProductClick=(product)=>{
+        setShowDeleteModal(true);
+        const updatedProps={...productProps, productToDelete: product}
+        setProductProps(updatedProps);
+    }
+
+    //deleting the products
+    const deleteProduct=async (id)=>{
+        setIsDeleting(true);
+        try{
+            await deleteAProduct(id);
+            toast.success('Product successfully deleted'); 
+            getProducts();
+        }
+        catch (error){
+            toast.error(error.response.data.message);
+        }
+        finally{
+            setIsDeleting(false);
+            resetProps();
         }
     }
 
   
-
-    const handleDeleteProduct=(product)=>{
-        setShowDeleteModal(true);
-        setProductToDeleteId(product.id);
-    }
-
-    const deleteProduct=async (id)=>{
-        try{
-            const res=await deleteAProduct(id);
-            console.log(res)   
-        }
-        catch (error){
-        
-            toast.error(error.response.data.message);
-        }
-    }
 
   
     return(
@@ -134,28 +207,29 @@ const Products=()=>{
                     </div>
                     {isLoading? <Spinner animation="border" variant="warning" className='justify-self-center self-center' />: 
                     <ProductTable products={products}
-                   
-                        handleDeleteProduct={handleDeleteProduct}   
+                    
+                        handleDeleteProductClick={handleDeleteProductClick}   
+                        handleEditProductClick={handleEditProductClick}
                     />}
                 </div>
             </div>
+
             <AddProductModal 
             show={showPorductModal}
-            setShow={setShowProductModal}
-            type={ProducType}
-            description={ProductDescription}
-            base64Image={base64Image}
-            setType={setProductType}
-            setDescription={setProductDescription}
-            setBase64Image={setBase64Image}
-            handleSave={createAProduct}
-             />
-             <DeleteModal 
-             show={showDeleteModal}
-             setShow={setShowDeleteModal}
-             productId={ProductToDeleteId}
-             deleteProduct={deleteProduct}
-             />
+            handleClose={resetProps}
+            productProps={productProps}
+            setProductProps={setProductProps}
+            handleSave={handleSave}
+            isSaving={isSaving}
+            />
+
+            <DeleteModal 
+            show={showDeleteModal}
+            handleClose={resetProps}
+            targetProduct={productProps.productToDelete}
+            deleteProduct={deleteProduct}
+            isDeleting={isDeleting}
+            />
         </div>
     )
 }

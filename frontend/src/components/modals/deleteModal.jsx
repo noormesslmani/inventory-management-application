@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import Button from '../buttons/button';
 import Modal from 'react-bootstrap/Modal';
 
-const DeleteModal=({show, setShow, productId, deleteProduct})=> {
+const DeleteModal=({show, handleClose, targetProduct, deleteProduct, isDeleting})=> {
 
-  const handleClose = () => setShow(false);
+
   return (
       <Modal
         show={show}
@@ -19,9 +19,9 @@ const DeleteModal=({show, setShow, productId, deleteProduct})=> {
           Are you sure you want to delete this product? 
         </Modal.Body>
         <Modal.Footer>
-            <Button handleClick={handleClose} label='No' styles='bg-gray-400' />
+            <Button disabled={isDeleting} handleClick={handleClose} label='No' styles='bg-gray-400' />
            
-           <Button  handleClick={()=>deleteProduct(productId)} label='Save Changes' styles='bg-secondary-color'/>
+           <Button disabled={isDeleting}  handleClick={()=>deleteProduct(targetProduct.id)} label='Yes' styles={`bg-secondary-color ${isDeleting?'opacity-50':''} `}/>
         </Modal.Footer>
       </Modal>
     
