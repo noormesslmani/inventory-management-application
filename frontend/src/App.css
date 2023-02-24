@@ -36,3 +36,18 @@
     transform: rotate(360deg);
   }
 }
+.nav-link{
+  color:white;
+  font-size: 26px;
+  font-weight:700;
+}
+.nav-link:hover{
+  color: #054168;
+  background-color: gainsboro;
+}
+.nav-link.active{
+  color: #054168;
+  background-color: gainsboro;
+
+}
+
