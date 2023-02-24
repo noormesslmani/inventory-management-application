@@ -2,7 +2,7 @@ import Table from 'react-bootstrap/Table';
 import {FaRegEdit} from 'react-icons/fa';
 import {MdDelete} from 'react-icons/md';
 
-function ProductTable({products}) {
+function ProductTable({products, handleDeleteProduct}) {
   return (
     <Table responsive className='w-full'>
       <thead>
@@ -27,7 +27,7 @@ function ProductTable({products}) {
            <td >
             <div className='flex gap-x-3'>
               <FaRegEdit color='#054168' size={20}/>
-              <MdDelete color= '#434343' size={20} />
+              <MdDelete color= '#434343' size={20} onClick={()=>handleDeleteProduct(product)}  />
             </div>
            </td>
          </tr>
