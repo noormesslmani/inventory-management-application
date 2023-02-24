@@ -1,10 +1,10 @@
 import React from 'react';
 
 
-const Logo=()=>{
+const Logo=({size=''})=>{
     return(
-        <p className='text-5xl text-secondary-color font-chango p-10 box-border'>
-            Website Logo
+        <p className={`text-6xl text-secondary-color font-chango p-10 box-border ${size}`}>
+            Logo
         </p>
     )
 }
