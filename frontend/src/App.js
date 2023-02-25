@@ -6,6 +6,8 @@ import { Routes, Route, BrowserRouter, Outlet, redirect } from "react-router-dom
 import { ToastContainer, toast } from 'react-toastify';
 import Products from './views/products';
 import 'react-toastify/dist/ReactToastify.css';
+import ProtectedRoute from './routes/protected';
+import PublicRoute from './routes/public';
 function App() {
   return (
     <>
@@ -14,9 +16,15 @@ function App() {
       <BrowserRouter>
       <Routes>
         
+      <Route element={<PublicRoute/>}>
         <Route path='/' element={<Landing/>}></Route>
+      </Route>
+
+      <Route element={<ProtectedRoute/>}>
         <Route path='/products' element={<Products/>}></Route>
         <Route path='/products/:id/items' element={<Items/>}></Route>
+      </Route>
+        
       
       </Routes>
     </BrowserRouter>
