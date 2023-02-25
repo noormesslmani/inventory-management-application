@@ -36,3 +36,12 @@ export async function addNewItems( data){
     }
   return response(config)
 }
+
+export async function searchItemsBySerialNumber(serial_number,product_id){
+  const config = {
+      method: "get",
+      params:{serial_number},
+      url:`${baseURL}/searched-items/${product_id}`,
+    }
+  return response(config)
+}
