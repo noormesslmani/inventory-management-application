@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import Button from '../../components/buttons/button';
 import SearchBar from '../../components/searchbar/searchbar';
 import Paginate from '../../components/pagination/pagination';
 import Spinner from 'react-bootstrap/Spinner';
 import ItemTable from '../../components/tables/ItemTable';
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getItemsByProductId, updateAnItem, deleteAnitem, addNewItems, searchItemsBySerialNumber } from '../../api/item';
 import DeleteModal from '../../components/modals/deleteModal';
 import ProductDetails from '../../components/sideBars/productDetails';
 import AddItemModal from '../../components/modals/itemModal';
+import { getItems, updateItem, deleteItem, addItems, searchItems } from '../../services/itemService';
 const Items=()=>{
 
     const location = useLocation();
@@ -36,7 +35,7 @@ const Items=()=>{
     const [serialNumbers, setSerialNumbers]=useState([]);
 
     useEffect(()=>{
-        getItems();
+        getItems(setIsloading, product, currentPage,setItems,setTotalPages);
     },[currentPage]);
 
     const resetProps=()=>{
@@ -50,22 +49,7 @@ const Items=()=>{
         setSerialNumbers([]);
     }
    
-    const getItems=async()=>{
-        setIsloading(true);
-        try{
-            const res=await getItemsByProductId(product.id, currentPage);
-            const itemsList= res.data.items.map(item=>({...item, readOnly:true}));
-            setItems(itemsList);
-            setTotalPages(res.data.total_pages);  
-        }
-        catch (error){
     
-            toast.error(error.response.data.message);
-        }
-        finally{
-            setIsloading(false);
-        }
-    }
 
 
     const handleEditItemClick=(target)=>{
@@ -77,27 +61,8 @@ const Items=()=>{
         });
     }
 
-    const updateItem=async(target)=>{
-        if(target.is_sold!= itemProps.isSold || target.serialNumber!==itemProps.serialNumber){
-            try{
-                const res = await updateAnItem({
-                    ...(target.is_sold!= itemProps.isSold  && { is_sold: itemProps.isSold}),
-                    ...(target.serialNumber!==itemProps.serialNumber && { serial_number: itemProps.serialNumber }),
-                },target.id);
-                toast.success('Item updated successfully');
-                if(target.is_sold!= itemProps.isSold){
-                    getItems();
-                }
-                else{
-                    const updatedItems= items.map(item=>target==item?{...res.data, readOnly:true}:item);
-                    setItems(updatedItems);
-                }   
-            }
-            catch (error){
-        
-                toast.error(error.response.data.message);
-            }
-        }
+    const handleUpdateItem=async(target)=>{
+        updateItem(target,itemProps, setIsloading, product, currentPage,setItems,setTotalPages,items);
         resetProps();
     }
 
@@ -106,55 +71,22 @@ const Items=()=>{
         setShowDeleteModal(true);
     }
 
-    const deleteItem=async ()=>{
-        setIsDeleting(true)
-        try{
-            await deleteAnitem(itemProps.itemToDelete.id);
-            getItems();
-        }
-        catch (error){
-            toast.error(error.response.data.message);
-        }
-        finally{
-            setIsDeleting(false);
-            resetProps();
-        }
+    const handleDeleteItem=async ()=>{
+        deleteItem(setIsDeleting, itemProps, setIsloading, product, currentPage,setItems,setTotalPages);
+        resetProps();
     }
 
-    const addItems=async ()=>{
-        setIsSaving(true)
-        try{
-            const res = await addNewItems({product_id: product.id, items: serialNumbers});
-            const updatedItems=[...res.data, ...items.splice(serialNumbers.length)];
-            setItems(()=>updatedItems.map(item=>({...item, readOnly:true})));
-           
-            toast.success('Items successfully added');
-
-        }
-        catch (error){
-            toast.error(error.response.data.message);
-        }
-        finally{
-            setIsSaving(false)
-            resetProps();
-        }
+    const handleAddItems=async ()=>{
+        setIsSaving(true);
+        addItems(setIsSaving, product, serialNumbers,items, setItems);
+        resetProps();
     }
 
-    const searchItems=async()=>{
-        setIsloading(true);
-        try{
-            const res=await searchItemsBySerialNumber(searchQuery, product.id);
-            setCurrentPage(1);
-            console.log(res);
-            setItems(()=>res.data.items.map(item=>({...item, readOnly:true})));
-        }
-        catch (error){
-            toast.error(error.response.data.message);
-        }
-        finally{
-            setIsloading(false);
-        }
+    const handleSearchItems=async()=>{
+        searchItems(setIsloading, searchQuery, product, setCurrentPage, setItems);
     }
+
+    
 
     return(
         <div className='w-screen min-h-screen p-3 flex flex-wrap box-border'>
@@ -165,7 +97,7 @@ const Items=()=>{
                     <Button disabled={isLoading} label='Add Items' handleClick={()=>setShowItemModal(true)} styles='bg-secondary-color text-lg font-medium' />
                 </div>
                 <div className='w-full flex flex-col p-3 box-border justify-between  rounded-lg h-32 bg-white drop-shadow-lg'>
-                    <SearchBar searchProducts={searchItems} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                    <SearchBar searchProducts={handleSearchItems} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
                 </div>
                 <div className='w-full flex flex-1 flex-col p-3 box-border rounded-lg bg-white drop-shadow-lg'>
                     <div className='flex justify-between items-center w-full'>
@@ -184,7 +116,7 @@ const Items=()=>{
                         handleEditItemClick={handleEditItemClick}
                         setItemProps={setItemProps}
                         itemProps={itemProps}
-                        handleSaveChanges={updateItem}
+                        handleSaveChanges={handleUpdateItem}
                         handleDeleteItemClick={handleDeleteItemClick}
                     />}
                 </div>
@@ -193,7 +125,7 @@ const Items=()=>{
             show={showDeleteModal}
             handleClose={resetProps}
             targetProduct={itemProps.itemToDelete}
-            deleteProduct={deleteItem}
+            deleteProduct={handleDeleteItem}
             isDeleting={isDeleting}
             />
             <AddItemModal 
@@ -202,7 +134,7 @@ const Items=()=>{
             serialNumbers={serialNumbers}
             setSerialNumbers={setSerialNumbers}
             isSaving={isSaving}
-            saveChanges={addItems}
+            saveChanges={handleAddItems}
             />
         </div>
     )
