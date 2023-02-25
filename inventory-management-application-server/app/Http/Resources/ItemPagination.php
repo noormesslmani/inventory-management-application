@@ -13,7 +13,7 @@ class ItemPagination extends JsonResource
         return [
             'total_pages'=>$this->lastPage(),
             'current_page'=>$this->currentPage(),
-            'items'=>new ItemCollection ($this->items())
+            'items'=>$this->items()?new ItemCollection ($this->items()):[]
         ];
     }
 }

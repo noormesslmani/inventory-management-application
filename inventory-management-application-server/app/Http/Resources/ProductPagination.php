@@ -12,7 +12,7 @@ class ProductPagination extends JsonResource
         return [
             'total_pages'=>$this->lastPage(),
             'current_page'=>$this->currentPage(),
-            'products'=>Product:: collection($this->items())
+            'products'=>$this->items()?Product:: collection($this->items()):[]
         ];
     }
 }
