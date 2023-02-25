@@ -27,3 +27,12 @@ export async function deleteAnitem(id){
     }
   return response(config)
 }
+
+export async function addNewItems( data){
+  const config = {
+      method: "post",
+      data,
+      url:`${baseURL}/items`,
+    }
+  return response(config)
+}
