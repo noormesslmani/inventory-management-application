@@ -6,7 +6,7 @@ import Paginate from '../../components/pagination/pagination';
 import Spinner from 'react-bootstrap/Spinner';
 import ItemTable from '../../components/tables/ItemTable';
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getItemsByProductId, updateAnItem, deleteAnitem, addNewItems } from '../../api/item';
+import { getItemsByProductId, updateAnItem, deleteAnitem, addNewItems, searchItemsBySerialNumber } from '../../api/item';
 import DeleteModal from '../../components/modals/deleteModal';
 import ProductDetails from '../../components/sideBars/productDetails';
 import AddItemModal from '../../components/modals/itemModal';
@@ -140,6 +140,22 @@ const Items=()=>{
         }
     }
 
+    const searchItems=async()=>{
+        setIsloading(true);
+        try{
+            const res=await searchItemsBySerialNumber(searchQuery, product.id);
+            setCurrentPage(1);
+            console.log(res);
+            setItems(()=>res.data.items.map(item=>({...item, readOnly:true})));
+        }
+        catch (error){
+            toast.error(error.response.data.message);
+        }
+        finally{
+            setIsloading(false);
+        }
+    }
+
     return(
         <div className='w-screen min-h-screen p-3 flex flex-wrap box-border'>
             <ProductDetails product={product}/>
@@ -149,7 +165,7 @@ const Items=()=>{
                     <Button disabled={isLoading} label='Add Items' handleClick={()=>setShowItemModal(true)} styles='bg-secondary-color text-lg font-medium' />
                 </div>
                 <div className='w-full flex flex-col p-3 box-border justify-between  rounded-lg h-32 bg-white drop-shadow-lg'>
-                    <SearchBar searchProducts={null} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                    <SearchBar searchProducts={searchItems} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
                 </div>
                 <div className='w-full flex flex-1 flex-col p-3 box-border rounded-lg bg-white drop-shadow-lg'>
                     <div className='flex justify-between items-center w-full'>
