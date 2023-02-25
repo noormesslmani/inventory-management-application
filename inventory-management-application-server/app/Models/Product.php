@@ -32,20 +32,6 @@ class Product extends Model
         }
     }
 
-    public static function updateProduct($validated, $product, $image_path): self
-    {
-        try {
-            if ($image_path) {
-                $validated['image'] = $image_path;
-            }
-            $product->fill($validated);
-            $product->save();
-            return $product;
-        } catch (Exception $e) {
-            throw new Exception( $e->getMessage());
-        }
-    }
-
     public function items(): HasMany
     {
         return $this->hasMany(Item::class, 'product_id');

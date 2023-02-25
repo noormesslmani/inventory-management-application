@@ -133,7 +133,7 @@ class ItemController extends Controller
             //query items correspoding to a product by serial number
             $items= $product
             ->items()
-            ->where('serial_number', $serial_number)
+            ->where('serial_number', 'LIKE', '%'.$serial_number.'%')
             ->paginate(15);
 
             return response()->json([
@@ -145,7 +145,7 @@ class ItemController extends Controller
             return response()->json(['status' => 'fail','message' => 'Action forbidden'], 403);
         }
         catch (NotFoundException $e) {
-            return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
+            return response()->json(['status' => 'fail','message' => 'Item not found'], 404);
         } 
         catch (Exception $e) {
             return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
@@ -166,7 +166,7 @@ class ItemController extends Controller
             $this->authorizeProduct($item->product_id);
 
             //updating the item
-            $updatedItem=Item::updateItem($validated, $item);
+            $updatedItem=$item->update($validated);;
 
             return response()->json([
                 'status' => 'success',

@@ -112,7 +112,10 @@ class ProductController extends Controller
             else $image_path=null;
             
             //update the product
-            $updatedProduct= Product::updateProduct($validated,$product, $image_path);
+            if ($image_path) {
+                $validated['image'] = $image_path;
+            }
+            $product->update($validated);
 
             return response()->json([
                 'status' => 'success',

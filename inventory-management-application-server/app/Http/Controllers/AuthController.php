@@ -20,7 +20,7 @@ class AuthController extends Controller
 
             //validate request
             $authValidators = new AuthValidators();
-            $validated = $authValidators-> validateRegisterRequest($request);
+            $validated = $authValidators-> validateEditProfileRequest($request);
         
             //create user
             $newUser= User::createUser(
