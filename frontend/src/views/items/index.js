@@ -6,7 +6,7 @@ import Paginate from '../../components/pagination/pagination';
 import Spinner from 'react-bootstrap/Spinner';
 import ItemTable from '../../components/tables/ItemTable';
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getItemsByProductId, updateAnItem, deleteAnitem } from '../../api/item';
+import { getItemsByProductId, updateAnItem, deleteAnitem, addNewItems } from '../../api/item';
 import DeleteModal from '../../components/modals/deleteModal';
 import ProductDetails from '../../components/sideBars/productDetails';
 import AddItemModal from '../../components/modals/itemModal';
@@ -29,6 +29,7 @@ const Items=()=>{
     
     const [isLoading, setIsloading]= useState(true);
     const [isDeleting, setIsDeleting]= useState(false);
+    const [isSaving, setIsSaving]=useState(false);
     const [showDeleteModal, setShowDeleteModal]= useState(false);
     const [showItemModal, setShowItemModal]= useState(false);
 
@@ -46,13 +47,14 @@ const Items=()=>{
         });
         setShowDeleteModal(false);
         setShowItemModal(false);
+        setSerialNumbers([]);
     }
    
     const getItems=async()=>{
         setIsloading(true);
         try{
             const res=await getItemsByProductId(product.id, currentPage);
-            const itemsList= res.data.items.items.map(item=>({...item, readOnly:true}));
+            const itemsList= res.data.items.map(item=>({...item, readOnly:true}));
             setItems(itemsList);
             setTotalPages(res.data.total_pages);  
         }
@@ -119,6 +121,25 @@ const Items=()=>{
         }
     }
 
+    const addItems=async ()=>{
+        setIsSaving(true)
+        try{
+            const res = await addNewItems({product_id: product.id, items: serialNumbers});
+            const updatedItems=[...res.data, ...items.splice(serialNumbers.length)];
+            setItems(()=>updatedItems.map(item=>({...item, readOnly:true})));
+           
+            toast.success('Items successfully added');
+
+        }
+        catch (error){
+            toast.error(error.response.data.message);
+        }
+        finally{
+            setIsSaving(false)
+            resetProps();
+        }
+    }
+
     return(
         <div className='w-screen min-h-screen p-3 flex flex-wrap box-border'>
             <ProductDetails product={product}/>
@@ -164,6 +185,8 @@ const Items=()=>{
             closeModal={resetProps}
             serialNumbers={serialNumbers}
             setSerialNumbers={setSerialNumbers}
+            isSaving={isSaving}
+            saveChanges={addItems}
             />
         </div>
     )
