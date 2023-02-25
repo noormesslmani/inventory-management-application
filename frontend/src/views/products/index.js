@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react';
 import ProductTable from '../../components/tables/productTable';
 import { toast } from 'react-toastify';
 import Button from '../../components/buttons/button';
-import NavBar from '../../components/navbar/navbar';
+import NavBar from '../../components/sideBars/navbar';
 import SearchBar from '../../components/searchbar/searchbar';
 import { getProductsByPage, searchProductsByType, createNewProduct, deleteAProduct, editAProduct } from '../../api/product';
 import Paginate from '../../components/pagination/pagination';
 import Spinner from 'react-bootstrap/Spinner';
 import AddProductModal from '../../components/modals/productModal';
 import DeleteModal from '../../components/modals/deleteModal';
+import { useNavigate } from "react-router-dom";
 const Products=()=>{
-    
+    const navigate= useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage]=useState(1);
     const [totalPages, setTotalPages]=useState(null);
@@ -182,6 +183,9 @@ const Products=()=>{
     }
 
   
+    const handleProductClick=(product)=>{
+        navigate(`/products/${product.id}/items`, {state:{product}});
+    }
 
   
     return(
@@ -206,10 +210,11 @@ const Products=()=>{
                         />}
                     </div>
                     {isLoading? <Spinner animation="border" variant="warning" className='justify-self-center self-center' />: 
-                    <ProductTable products={products}
-                    
-                        handleDeleteProductClick={handleDeleteProductClick}   
-                        handleEditProductClick={handleEditProductClick}
+                    <ProductTable 
+                    products={products}
+                    handleProductClick={handleProductClick}
+                    handleDeleteProductClick={handleDeleteProductClick}   
+                    handleEditProductClick={handleEditProductClick}
                     />}
                 </div>
             </div>
