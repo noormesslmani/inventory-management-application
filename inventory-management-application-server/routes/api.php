@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ProductController;
-
+use App\Http\Controllers\ProfileController;
 
 Route::group(['prefix' => 'v1.0.0'], function () {
     Route::group(['prefix' => 'auth'], function ($router) {
@@ -29,6 +29,9 @@ Route::group(['prefix' => 'v1.0.0'], function () {
         Route::post('/items', [ItemController::class, 'addNewItems']);
         Route::delete('/item/{id}', [ItemController::class, 'deleteItem']);
         Route::patch('/item/{id}', [ItemController::class, 'updateItem']);
+
+        Route::patch('/profile', [ProfileController::class, 'editProfile']);
+        Route::patch('/password', [ProfileController::class, 'changePassword']);
 
         
        
