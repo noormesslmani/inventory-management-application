@@ -5,7 +5,8 @@ import RegisterFormFirst from '../../components/forms/registerFormFirst';
 import RegisterFormSecond from '../../components/forms/registerFormSecond';
 import { createAccount, login } from '../../api/auth';
 import { toast } from 'react-toastify';
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom';
+
 const Landing=()=>{
     const navigate= useNavigate();
     const [formType, setFormType]= useState('login');
@@ -16,8 +17,9 @@ const Landing=()=>{
     const [registerEmail, setRegisterEmail]=useState(null);
     const [registerPassword, setRegisterPassword]=useState(null);
     const [confirmPassword, setConfirmPassword]=useState(null);
-
+    const [isLoading ,setIsLoading]=useState(false);
     const handleLogin=async()=>{
+      setIsLoading(true);
       try{
         const res=await login({email:loginEmail, password: loginPassword});
         console.log(res)
@@ -29,9 +31,13 @@ const Landing=()=>{
     
         toast.error(error.response.data.message);
       }
+      finally{
+        setIsLoading(false);
+      }
     }
 
     const handleRegister=async()=>{
+      setIsLoading(true)
         try{
           const res =await createAccount({
             email:registerEmail, 
@@ -42,6 +48,9 @@ const Landing=()=>{
         }
         catch (error){
           toast.error(error.response.data.message);
+        }
+        finally{
+          setIsLoading(false);
         }
       }
     
@@ -57,6 +66,7 @@ const Landing=()=>{
             setEmail={setLoginEmail}
             setPassword={setLoginPassword}
             handleLogin={handleLogin}
+            isLoading={isLoading}
             />: 
             formType=='registerfirst'?
             <RegisterFormFirst 
@@ -75,6 +85,7 @@ const Landing=()=>{
             setPassword={setRegisterPassword}
             setConfirmPassword={setConfirmPassword}
             handleRegister={handleRegister}
+            isLoading={isLoading}
             />
             }
             

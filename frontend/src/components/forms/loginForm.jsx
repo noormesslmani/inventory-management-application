@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from '../buttons/button';
-
-const LogInForm=({setFormType, email, password, setEmail, setPassword, handleLogin})=> {
+import { validatePassword } from '../../helpers/validators';
+import Spinner from 'react-bootstrap/Spinner';
+const LogInForm=({setFormType, email, password, setEmail, setPassword, handleLogin, isLoading})=> {
   const [validated, setValidated] = useState(false);
-  const [isLaoding, setIsLaoing]= useState(false);
+ 
   const handleSubmit = async (event) => {
     const form = event.currentTarget;
     setValidated(true);
     event.preventDefault();
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() === false || !validatePassword(password)) {
       event.stopPropagation();
     }
     else{
@@ -22,6 +23,8 @@ const LogInForm=({setFormType, email, password, setEmail, setPassword, handleLog
     }, "2000")
     
   };
+
+  console.log(isLoading)
 
   return (
     <Form noValidate validated={validated} onSubmit={handleSubmit} className='bg-white w-96 rounded-lg drop-shadow-xl h-auto py-7 gap-y-3 flex flex-col items-center' >
@@ -66,6 +69,7 @@ const LogInForm=({setFormType, email, password, setEmail, setPassword, handleLog
             Create Account
           </span> 
         </p>
+        {isLoading && <Spinner animation="border" variant="warning" className='justify-self-center self-center' />}
         <Button label='Login' type='submit' styles='mt-2 bg-secondary-color'/>
     </Form>
   );

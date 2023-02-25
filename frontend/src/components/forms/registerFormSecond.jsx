@@ -2,22 +2,20 @@ import React, { useState } from 'react';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from '../buttons/button';
-
-const RegisterFormSecond=({setFormType, email, password, confirmPassword, setEmail, setPassword, setConfirmPassword, handleRegister})=> {
+import { validatePassword, validateConfirmPassword } from '../../helpers/validators';
+import Spinner from 'react-bootstrap/Spinner';
+const RegisterFormSecond=({setFormType, email, password, confirmPassword, setEmail, setPassword, setConfirmPassword, handleRegister, isLaoding})=> {
   const [validated, setValidated] = useState(false);
 
   const handleSubmit = async (event) => {
         const form = event.currentTarget;
-        setValidated(true);
         event.preventDefault();
-        if (form.checkValidity() === false) {
-        event.stopPropagation();
-        setTimeout(() => {
+        if (form.checkValidity() === false || !validatePassword(password) || !validateConfirmPassword(password, confirmPassword) ) {
+            event.stopPropagation();
             setValidated(false);
-        }, "2000")
         }
         else{
-            console.log('hi')
+            setValidated(true);
             await handleRegister();
         }
     };
@@ -84,6 +82,7 @@ const RegisterFormSecond=({setFormType, email, password, confirmPassword, setEma
                 Login
             </span> 
         </p>
+        {isLaoding && <Spinner animation="border" variant="warning" className='justify-self-center self-center' />}
         <div className='flex gap-x-2'>
             <Button label='Back' type='' 
             styles='m-2 bg-gray-400' 

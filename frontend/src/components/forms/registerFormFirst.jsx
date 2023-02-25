@@ -2,24 +2,21 @@ import React, { useState } from 'react';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from '../buttons/button';
-
+import { validateName } from '../../helpers/validators';
 const RegisterFormFirst=({setFormType, firstName, lastName, setFirstName, setLastName})=> {
   const [validated, setValidated] = useState(false);
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
-    
-    setValidated(true);
-    if (form.checkValidity() === false) {
-      event.preventDefault();
+    event.preventDefault();
+    if (form.checkValidity() === false || !validateName(firstName) || !validateName(lastName)) {
+      setValidated(false);
       event.stopPropagation();
-      setTimeout(() => {
-        setValidated(false);
-        }, "2000");
     
     }
     else{
-        setFormType('rregisterfirst');
+        setValidated(true);
+        setFormType('registersecond');
     }
 
     
