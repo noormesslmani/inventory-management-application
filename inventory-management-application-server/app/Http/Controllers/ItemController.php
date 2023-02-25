@@ -29,7 +29,11 @@ class ItemController extends Controller
             $this->authorizeProduct($product_id);
 
             //query collections of items coressponding to current product
-            $items= Product::find($product_id)->items()->paginate(15);
+            $items = Product::find($product_id)
+            ->items()
+            ->orderBy('is_sold', 'asc')
+            ->paginate(15);
+
 
 
             return response()->json([
@@ -65,10 +69,11 @@ class ItemController extends Controller
             $this->authorizeProduct($product_id);
 
             //create the requestion collection of items 
-            Item::createACollectionOfItems($request->items, $product_id);
+            $items= Item::createACollectionOfItems($request->items, $product_id);
 
             return response()->json([
                 'status' => 'success',
+                'data'=>array_reverse($items)
             ], 201);
         } 
         catch (ValidationException $e) {
@@ -133,7 +138,7 @@ class ItemController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data'=>$items,
+                'data'=>new ItemPagination($items),
             ], 200);
         }
         catch (ActionForbiddenException $e) {

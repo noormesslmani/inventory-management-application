@@ -20,18 +20,21 @@ class Item extends Model
     ];
 
 
-    public static function createACollectionOfItems($items, $product_id): void
+    public static function createACollectionOfItems($serialNumbers, $product_id): array
     {
+        $items=[];
         try {
-            foreach($items as $serial_number){
-                self::create(
+            foreach($serialNumbers as $serial_number){
+                $item= self::create(
                     [
                     'serial_number'=>  $serial_number,
                     'is_sold' => false,
                     'product_id'=>$product_id,
                     ]
                 );
+                $items[] = $item;
             }
+            return $items;
           
         } catch (Exception $e) {
             throw new Exception( $e->getMessage());
