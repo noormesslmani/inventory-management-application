@@ -2,7 +2,7 @@ import Table from 'react-bootstrap/Table';
 import {FaRegEdit} from 'react-icons/fa';
 import {MdDelete} from 'react-icons/md';
 
-function ProductTable({products, handleDeleteProductClick, handleEditProductClick}) {
+function ProductTable({products, handleDeleteProductClick, handleEditProductClick, handleProductClick}) {
   return (
     <Table responsive className='w-full'>
       <thead>
@@ -17,8 +17,8 @@ function ProductTable({products, handleDeleteProductClick, handleEditProductClic
         {products?.map((product, index) => (
            <tr key={index}>
            <td>{product.id}</td>
-           <td>
-            <div className='flex gap-x-3 text-ellipsis overflow-hidden' onClick={()=>console.log('hi')}>
+           <td className='hover:bg-primary-color hover:text-white font-medium hover:cursor-pointer'>
+            <div className='flex gap-x-3 text-ellipsis overflow-hidden ' onClick={()=>handleProductClick(product)}>
               <img src={`http://localhost:8000/images/${product.image}`} className='w-7 h-7' />
                {product.type}
             </div>
