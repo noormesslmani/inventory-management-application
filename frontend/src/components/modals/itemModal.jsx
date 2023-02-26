@@ -16,19 +16,14 @@ const AddItemModal=({show, closeModal, isSaving =false, serialNumbers, setSerial
 
     const handleSubmit =  (e) => {
         e.preventDefault();
-        if(number>0 && number<=10){
-            setValidated(true);
+       
+        if(number>0 && number<=15){
             setSerialNumbers(Array(parseInt(number)).fill('0'))
             setPage(2);
         }
-        
-        else{
-            setValidated(false)
-        }
+    
     }
-    useEffect(()=>{
-        setValidated(false);
-    },[page])
+   
 
     const handleChange=(e,ind)=>{
         const arr= serialNumbers.map((number, i)=>i==ind?e.target.value:number)
@@ -38,16 +33,12 @@ const AddItemModal=({show, closeModal, isSaving =false, serialNumbers, setSerial
     const handleSave = async (e) => {
         e.preventDefault();
         if(validateSerialNumber(serialNumbers)){
-            setValidated(true);
             await saveChanges();
             setNumber(null);
             setPage(1);      
         }
-        else{
-            setValidated(false)
-        }
         
-      };
+    };
 
    
     return (
@@ -60,28 +51,28 @@ const AddItemModal=({show, closeModal, isSaving =false, serialNumbers, setSerial
                 {page==1?
                 <Form noValidate validated={validated} onSubmit={handleSubmit} className='flex flex-col items-center' >
     
-                    <Form.Group  md="3" controlId="validationCustom01" className='w-10/12' >
+                    <Form.Group  md="3" controlId="validationCustom01" className='w-10/12 mb-3' >
                     
                             <Form.Control required 
                             type="number" 
                             placeholder="example: 5" 
                             value={number} 
                             onChange={(e)=> setNumber(e.target.value)}
-                            isInvalid={number>10 || number<=0}
+                            isInvalid={number>15 || number<=0}
                             />
                             <Form.Control.Feedback type="invalid">
-                            Number must be between 1 and 10
+                            Number must be between 1 and 15
                             </Form.Control.Feedback>
                     
                     </Form.Group>
             
-                    <Button label='Next' type='submit' styles='mt-2 bg-secondary-color'/>
+                    <Button label='Next' type='submit' styles='m-3 bg-secondary-color'/>
                 </Form>
                 :
                 <Form  validated={validated} onSubmit={handleSubmit} className='flex flex-col items-center' >
     
                 { serialNumbers?.map((serialNumber,ind)=>
-                    <Form.Group className="mb-3" >
+                    <Form.Group className='w-10/12'  >
                     <Form.Label>Serial Number</Form.Label>
                     <Form.Control
                         type="text"
@@ -99,14 +90,14 @@ const AddItemModal=({show, closeModal, isSaving =false, serialNumbers, setSerial
                     
                 }
         
-                    <div className='flex w-full justify-center gap-x-3'>
-                        <Button handleClick={handleClose} disabled={isSaving} label='Cancel' styles='bg-gray-400' />
+                    <div className='flex w-full justify-center '>
+                        <Button handleClick={handleClose} disabled={isSaving} label='Cancel' styles={`m-3 bg-gray-400 ${isSaving?'cursor-not-allowed':''}`} />
                         
                         <Button 
                         disabled={isSaving}  
                         handleClick={handleSave} 
                         label='Save Changes' 
-                        styles={`bg-secondary-color ${(isSaving)?'opacity-50':''} `}/>
+                        styles={`m-3 bg-secondary-color${isSaving?'cursor-not-allowed opacity-50':''} `}/>
                     </div>
                     
                 </Form>

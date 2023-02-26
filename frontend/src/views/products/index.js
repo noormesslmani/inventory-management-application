@@ -8,6 +8,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import AddProductModal from '../../components/modals/productModal';
 import DeleteModal from '../../components/modals/deleteModal';
 import { useNavigate } from "react-router-dom";
+import empty from '../../assets/empty.png';
 import { getProducts, searchProducts, createProduct, editProduct, deleteProduct } from '../../services/productService';
 const Products=()=>{
     const navigate= useNavigate();
@@ -116,10 +117,18 @@ const Products=()=>{
             <div className='flex flex-col items-center flex-1 px-5 py-3 gap-y-5  box-border'>
                 <div className='flex items-center justify-between w-full'>
                     <p className='text-3xl text-secondary-color  font-semibold'>Products</p>
-                    <Button disabled={isLoading} label='New Product' handleClick={()=>setShowProductModal(true)} styles='bg-secondary-color text-lg font-medium' />
+                    <Button 
+                    disabled={isLoading} 
+                    label='New Product' 
+                    handleClick={()=>setShowProductModal(true)} 
+                    styles={`bg-secondary-color text-lg font-medium ${isLoading?'cursor-not-allowed opacity-50':''}`} />
                 </div>
-                <div className='w-full flex flex-col p-3 box-border justify-between  rounded-lg h-32 bg-white drop-shadow-lg'>
-                    <SearchBar searchProducts={handleSearch} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                <div className='w-full flex flex-col p-3 box-border justify-between  rounded-lg sm:h-32 h-40 bg-white drop-shadow-lg'>
+                    <SearchBar 
+                    isLoading={isLoading}
+                    searchProducts={handleSearch} 
+                    searchQuery={searchQuery} 
+                    setSearchQuery={setSearchQuery} />
                 </div>
                 <div className='w-full flex flex-1 flex-col p-3 box-border rounded-lg bg-white drop-shadow-lg'>
                     <div className='flex justify-between items-center w-full'>
@@ -132,6 +141,11 @@ const Products=()=>{
                         />}
                     </div>
                     {isLoading? <Spinner animation="border" variant="warning" className='justify-self-center self-center' />: 
+                    products.length==0?
+                    <div className='justify-self-center self-center flex flex-col items-center'>
+                        <img src={empty} className='w-64  '/>
+                        <p className='text-secondary-color text-lg font-semibold' >No Products found :(</p>
+                    </div>:
                     <ProductTable 
                     products={products}
                     handleProductClick={handleProductClick}

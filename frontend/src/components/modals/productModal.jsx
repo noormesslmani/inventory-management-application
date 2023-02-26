@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Button from '../buttons/button';
-import ImagePicker from '../imagePicker/dropzone';
+import ImagePicker from '../imagePicker/productImagePicker';
 const AddProductModal=({show, handleClose, productProps, setProductProps, handleSave, isSaving })=> {
 
 
@@ -42,7 +42,7 @@ const AddProductModal=({show, handleClose, productProps, setProductProps, handle
           disabled={productProps.type=='' || productProps.description =='' || isSaving}  
           handleClick={handleSave} 
           label='Save Changes' 
-          styles={`bg-secondary-color ${(productProps.type =='' || productProps.description =='' || isSaving)?'opacity-50':''} `}/>
+          styles={`bg-secondary-color ${(productProps.type =='' || productProps.description =='' || isSaving)?'cursor-not-allowed opacity-50':''} `}/>
            
         </Modal.Footer>
       </Modal>

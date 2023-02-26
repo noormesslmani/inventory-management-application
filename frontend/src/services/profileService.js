@@ -23,7 +23,7 @@ export const handleSaveChanges=async (setIsloading, user,base64,setUser, setIsRe
         }
 }
 export const handleChangePassword=async(setIsloading, setIsReadOnly, data)=>{
-    console.log(data)
+    setIsloading(true)
     try{
         await changePassowrd(data);
         

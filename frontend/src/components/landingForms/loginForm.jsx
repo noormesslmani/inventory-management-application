@@ -4,17 +4,18 @@ import Form from 'react-bootstrap/Form';
 import Button from '../buttons/button';
 import { validatePassword } from '../../helpers/validators';
 import Spinner from 'react-bootstrap/Spinner';
-const LogInForm=({setFormType, email, password, setEmail, setPassword, handleLogin, isLoading})=> {
+const LogInForm=({setFormType, loginProps, setLoginProps, handleLogin, isLoading})=> {
   const [validated, setValidated] = useState(false);
  
   const handleSubmit = async (event) => {
     const form = event.currentTarget;
-    setValidated(true);
+    setValidated(true)
     event.preventDefault();
-    if (form.checkValidity() === false || !validatePassword(password)) {
+    if (form.checkValidity() === false || !validatePassword(loginProps.password)) {
       event.stopPropagation();
     }
     else{
+      
       await handleLogin();
     }
    
@@ -24,7 +25,7 @@ const LogInForm=({setFormType, email, password, setEmail, setPassword, handleLog
     
   };
 
-  console.log(isLoading)
+  
 
   return (
     <Form noValidate validated={validated} onSubmit={handleSubmit} className='bg-white w-96 rounded-lg drop-shadow-xl h-auto py-7 gap-y-3 flex flex-col items-center' >
@@ -38,8 +39,8 @@ const LogInForm=({setFormType, email, password, setEmail, setPassword, handleLog
                 >
                 <Form.Control required type="email" 
                 placeholder="name@example.com" 
-                value={email} 
-                onChange={(e)=> setEmail(e.target.value)}
+                value={loginProps.email} 
+                onChange={(e)=> setLoginProps({...loginProps, email:e.target.value})}
                 />
                 <Form.Control.Feedback type="invalid">
                     Please enter a valid email.
@@ -52,9 +53,9 @@ const LogInForm=({setFormType, email, password, setEmail, setPassword, handleLog
                 <Form.Control 
                 required type="password" 
                 placeholder="Password" 
-                value={password} 
-                onChange={(e)=> setPassword(e.target.value)}
-                isInvalid={password?.length<8}
+                value={loginProps.password} 
+                onChange={(e)=> setLoginProps({...loginProps, password:e.target.value})}
+                isInvalid={loginProps.password?.length<8}
                 />
                 <Form.Control.Feedback type="invalid">
                     Password must be atleast 8 characters long
@@ -70,7 +71,7 @@ const LogInForm=({setFormType, email, password, setEmail, setPassword, handleLog
           </span> 
         </p>
         {isLoading && <Spinner animation="border" variant="warning" className='justify-self-center self-center' />}
-        <Button label='Login' type='submit' styles='mt-2 bg-secondary-color'/>
+        <Button label='Login' type='submit' styles={`mt-2 bg-secondary-color ${isLoading?'cursor-not-allowed opacity-50':''}`}/>
     </Form>
   );
 }

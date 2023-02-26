@@ -23,9 +23,15 @@ const ImagePicker = ({setBase64, user}) => {
     <div {...getRootProps()} className='self-center' >
         <input {...getInputProps()} />
         {file ? (
-            <img src={file.preview} alt="preview" className="h-64 w-56" />
+            <img src={file.preview} 
+            alt="preview" 
+            className="h-64 w-56 object-contain" 
+            />
         ) : (
-            <img src={`http://localhost:8000/images/${user?.profile_picture}`} alt="default" className="h-64 w-56" />
+            <img 
+            src={`http://localhost:8000/images/${user?.profile_picture}`} 
+            alt="default" 
+            className="h-64 w-56 object-contain" />
         )}
     </div>
   );

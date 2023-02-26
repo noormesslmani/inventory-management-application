@@ -3,24 +3,24 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from '../buttons/button';
 import { validateName } from '../../helpers/validators';
-const RegisterFormFirst=({setFormType, firstName, lastName, setFirstName, setLastName})=> {
+const RegisterFormFirst=({setFormType, registerProps, setRegisterprops})=> {
   const [validated, setValidated] = useState(false);
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
+    setValidated(true);
     event.preventDefault();
-    if (form.checkValidity() === false || !validateName(firstName) || !validateName(lastName)) {
-      setValidated(false);
-      event.stopPropagation();
-    
+    if (form.checkValidity() === false || 
+        !validateName(registerProps.first_name) || 
+        !validateName(registerProps.last_name)) {
+        event.stopPropagation();
     }
     else{
-        setValidated(true);
         setFormType('registersecond');
     }
-
-    
-  
+    setTimeout(() => {
+        setValidated(false);
+    }, "2000");
   };
 
 
@@ -38,9 +38,9 @@ const RegisterFormFirst=({setFormType, firstName, lastName, setFirstName, setLas
                 <Form.Control 
                 required type="text" 
                 placeholder="John"  
-                value={firstName}
-                onChange={(e)=>setFirstName(e.target.value)}
-                isInvalid={firstName?.length<=1}
+                value={registerProps.first_name}
+                onChange={(e)=>setRegisterprops({...registerProps, first_name:e.target.value})}
+                isInvalid={registerProps.first_name?.length<2}
                 />
                 <Form.Control.Feedback type="invalid">
                     Please enter a valid first name.
@@ -53,9 +53,9 @@ const RegisterFormFirst=({setFormType, firstName, lastName, setFirstName, setLas
                 <Form.Control 
                 required type="text" 
                 placeholder="Smith" 
-                value={lastName}
-                onChange={(e)=>setLastName(e.target.value)}
-                isInvalid={lastName?.length<=1}
+                value={registerProps.last_name}
+                onChange={(e)=>setRegisterprops({...registerProps, last_name:e.target.value})}
+                isInvalid={registerProps.last_name?.length<2}
                 />
                 <Form.Control.Feedback type="invalid">
                     please enter a valid last name.

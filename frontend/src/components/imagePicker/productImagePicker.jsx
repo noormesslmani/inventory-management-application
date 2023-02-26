@@ -25,7 +25,10 @@ const ImagePicker = ({setProductProps, productProps}) => {
       {file ? (
         <img src={file.preview} alt="preview" className="h-64" />
       ) : (
-        <img src={`http://localhost:8000/images/${productProps.defaultImage}`} alt="default" className="h-64" />
+        <img 
+        src={`http://localhost:8000/images/${productProps.defaultImage}`} 
+        alt="default" 
+        className="h-64" />
       )}
     </div>
   );

@@ -24,6 +24,7 @@ export const updateItem=async(target,itemProps, setIsloading, product, currentPa
                 ...(target.is_sold!= itemProps.isSold  && { is_sold: itemProps.isSold}),
                 ...(target.serialNumber!==itemProps.serialNumber && { serial_number: itemProps.serialNumber }),
             },target.id);
+           
             toast.success('Item updated successfully');
             if(target.is_sold!= itemProps.isSold){
                 getItems(setIsloading, product, currentPage,setItems,setTotalPages);
@@ -46,6 +47,7 @@ export const deleteItem=async (setIsDeleting, itemProps, setIsloading, product, 
     try{
         await deleteAnitem(itemProps.itemToDelete.id);
         getItems(setIsloading, product, currentPage,setItems,setTotalPages);
+        toast.success('Item successfully deleted');
     }
     catch (error){
         toast.error(error.response.data.message);

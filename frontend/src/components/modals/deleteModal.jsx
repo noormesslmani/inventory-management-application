@@ -19,9 +19,9 @@ const DeleteModal=({show, handleClose, targetProduct, deleteProduct, isDeleting}
           Are you sure you want to delete this product? 
         </Modal.Body>
         <Modal.Footer>
-            <Button disabled={isDeleting} handleClick={handleClose} label='No' styles='bg-gray-400' />
+            <Button disabled={isDeleting} handleClick={handleClose} label='No' styles={`bg-gray-400 ${isDeleting?'cursor-not-allowed':''}`} />
            
-           <Button disabled={isDeleting}  handleClick={()=>deleteProduct(targetProduct.id)} label='Yes' styles={`bg-secondary-color ${isDeleting?'opacity-50':''} `}/>
+           <Button disabled={isDeleting}  handleClick={()=>deleteProduct(targetProduct.id)} label='Yes' styles={`bg-secondary-color ${isDeleting?'cursor-not-allowed opacity-50':''} `}/>
         </Modal.Footer>
       </Modal>
     

@@ -4,20 +4,29 @@ import Form from 'react-bootstrap/Form';
 import Button from '../buttons/button';
 import { validatePassword, validateConfirmPassword } from '../../helpers/validators';
 import Spinner from 'react-bootstrap/Spinner';
-const RegisterFormSecond=({setFormType, email, password, confirmPassword, setEmail, setPassword, setConfirmPassword, handleRegister, isLaoding})=> {
+const RegisterFormSecond=({setFormType, registerProps, setRegisterprops, handleRegister, isLoading})=> {
   const [validated, setValidated] = useState(false);
+
 
   const handleSubmit = async (event) => {
         const form = event.currentTarget;
+        setValidated(true);
         event.preventDefault();
-        if (form.checkValidity() === false || !validatePassword(password) || !validateConfirmPassword(password, confirmPassword) ) {
-            event.stopPropagation();
-            setValidated(false);
+        if (form.checkValidity() === false || 
+            !validatePassword(registerProps.password) || 
+            !validateConfirmPassword(registerProps.password, registerProps.confirm_password) )
+        {
+            
+            event.stopPropagation(); 
         }
         else{
-            setValidated(true);
+            console.log('hi')
             await handleRegister();
+            
         }
+        setTimeout(() => {
+            setValidated(false);
+        }, "2000")
     };
     const handleBack=(e)=>{
         e.preventDefault();
@@ -35,8 +44,8 @@ const RegisterFormSecond=({setFormType, email, password, confirmPassword, setEma
                 label="Email address"
                 >
                 <Form.Control required type="email" placeholder="name@example.com" 
-                 value={email}
-                 onChange={(e)=>setEmail(e.target.value)}
+                 value={registerProps.email}
+                 onChange={(e)=>setRegisterprops({...registerProps, email: e.target.value})}
                 />
                 <Form.Control.Feedback type="invalid">
                     Please enter a valid email.
@@ -49,9 +58,9 @@ const RegisterFormSecond=({setFormType, email, password, confirmPassword, setEma
                 <Form.Control 
                 required type="password" 
                 placeholder="Password"
-                value={password}
-                onChange={(e)=>setPassword(e.target.value)} 
-                isInvalid={password?.length<8}
+                value={registerProps.password}
+                onChange={(e)=>setRegisterprops({...registerProps, password: e.target.value})} 
+                isInvalid={registerProps.password?.length<8}
                 />
                 <Form.Control.Feedback type="invalid">
                     Password must be atleast 8 characters long
@@ -64,9 +73,9 @@ const RegisterFormSecond=({setFormType, email, password, confirmPassword, setEma
                 <Form.Control 
                 required type="password" 
                 placeholder="Password"
-                value={confirmPassword}
-                onChange={(e)=>setConfirmPassword(e.target.value)}  
-                isInvalid={confirmPassword!=password}
+                value={registerProps.confirm_password}
+                onChange={(e)=>setRegisterprops({...registerProps, confirm_password: e.target.value})}  
+                isInvalid={registerProps.confirm_password!=registerProps.password}
                 />
                 <Form.Control.Feedback type="invalid">
                     Passwords do not match
@@ -82,13 +91,13 @@ const RegisterFormSecond=({setFormType, email, password, confirmPassword, setEma
                 Login
             </span> 
         </p>
-        {isLaoding && <Spinner animation="border" variant="warning" className='justify-self-center self-center' />}
+        {isLoading && <Spinner animation="border" variant="warning" className='justify-self-center self-center' />}
         <div className='flex gap-x-2'>
             <Button label='Back' type='' 
             styles='m-2 bg-gray-400' 
             handleClick={handleBack}
             />
-            <Button label='Register' type='submit' styles='m-2 bg-secondary-color'  />
+            <Button label='Register' type='submit' styles={`m-2 bg-secondary-color ${isLoading?'cursor-not-allowed opacity-50':''}`} />
         </div>
        
     </Form>
