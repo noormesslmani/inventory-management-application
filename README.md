@@ -47,7 +47,7 @@ Here's a brief high-level overview of the tech stacks the app uses:
 
 | Login  | Register | 
 | ----------| ----------| 
-| <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/login.gif" width="400"> | <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/creating-account.gif" width="400"> | 
+| <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/login.gif" width="400"> | <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/creating-accout.gif" width="400"> | 
 
 | Invalid Credentials | 
 | ----------| 
@@ -62,7 +62,7 @@ Here's a brief high-level overview of the tech stacks the app uses:
 
 | Delete Product  | Search Products |
 | ----------| ----------| 
-| <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/deleting-product.gif" width="400"> | <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/searcging-product.gif" width="400"> | 
+| <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/deleting-product.gif" width="400"> | <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/searching-product.gif" width="400"> | 
 
 
 ### Items:
