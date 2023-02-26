@@ -11,13 +11,12 @@
 
 <br><br>
 
-
 ### Users Stories
-- As a User, I want to display the list of product types already added in a table.
-- As a User, I want to to see all the items that are in the inventory of product type clicked on.
+- As a User, I want to display the list of product types added in a table.
+- As a User, I want to to see all the items that are in the inventory correspoding to a product type.
 - As a User, I want to add new products.
-- As a User, I want to search pproducts by type.
-- As a User, I want to display the list of items of a product type in a table.
+- As a User, I want to search products by type.
+- As a User, I want to display the list of items of a certain product type in a table.
 - As a User, I want to add, edit, and delete items.
 - As a User, I want to create accout, login, and edit profile.
 
@@ -34,12 +33,7 @@ Here's a brief high-level overview of the tech stacks the app uses:
 - For Database the project uses [MySQL](https://www.mysql.com/) database, which is a relational database management system based on the Structured Query Language.
 <br><br>
 
-
-<br><br>
-
-
 > Uing the above mentioned tech stacks and the user sotries we have, the implementation of the app is shown as below, these are screenshots from the real app
-
 
 
 ### Landing:
@@ -86,8 +80,6 @@ Here's a brief high-level overview of the tech stacks the app uses:
 | Edit Profile | Change Password|
 | ----------| ----------|  
 | <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/edit-profile.gif" width="400"> | <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/change-password.gif" width="400"> |
-
-
 
 
 > This is an example of how you may give instructions on setting up your project locally.
