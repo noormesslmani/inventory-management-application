@@ -42,7 +42,51 @@ Here's a brief high-level overview of the tech stacks the app uses:
 
 
 
+### Landing:
 ---------------
+
+| Login  | Register | 
+| ----------| ----------| 
+| <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/login.gif" width="400"> | <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/creating-account.gif" width="400"> | 
+
+| Invalid Credentials | 
+| ----------| 
+| <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/wrong-credentials.gif" width="400"> |
+
+### Products:
+---------------
+
+| Products Table  | Add Product |
+| ----------| ----------| 
+| <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/products-table.gif" width="400"> | <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/adding-product.gif" width="400"> |  
+
+| Delete Product  | Search Products |
+| ----------| ----------| 
+| <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/deleting-product.gif" width="400"> | <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/searcging-product.gif" width="400"> | 
+
+
+### Items:
+---------------
+
+| Items Table  | Add Items |
+| ----------| ----------| 
+| <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/items-table.gif" width="400"> | <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/adding-items.gif" width="400"> |  
+
+| Delete Item | Search Items |
+| ----------| ----------|  
+| <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/deleting-item.gif" width="400"> | <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/searching-items.gif" width="400"> |
+
+| Edit Item | 
+| ----------| 
+| <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/editing-item.gif" width="400"> |
+
+### Profile:
+---------------
+
+| Edit Profile | Change Password|
+| ----------| ----------|  
+| <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/edit-profile.gif" width="400"> | <img src="https://github.com/noormesslmani/inventory-management-application/blob/main/assets/change-password.gif" width="400"> |
+
 
 
 
