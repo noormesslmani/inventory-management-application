@@ -10,6 +10,7 @@ import ProtectedRoute from './routes/protected';
 import PublicRoute from './routes/public';
 import Profile from './views/profile';
 import { MenuProvider } from './context/menuContext';
+import Password from './views/password';
 function App() {
   return (
     <>
@@ -27,6 +28,7 @@ function App() {
           <Route path='/products' element={<Products/>}></Route>
           <Route path='/products/:id/items' element={<Items/>}></Route>
           <Route path='/profile' element={<Profile/>}></Route>
+          <Route path='/password' element={<Password/>}></Route>
         </Route>
           
         
