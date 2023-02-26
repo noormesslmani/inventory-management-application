@@ -8,26 +8,31 @@ import Products from './views/products';
 import 'react-toastify/dist/ReactToastify.css';
 import ProtectedRoute from './routes/protected';
 import PublicRoute from './routes/public';
+import Profile from './views/profile';
+import { MenuProvider } from './context/menuContext';
 function App() {
   return (
     <>
+      <MenuProvider>
        <ToastContainer />
       
-      <BrowserRouter>
-      <Routes>
-        
-      <Route element={<PublicRoute/>}>
-        <Route path='/' element={<Landing/>}></Route>
-      </Route>
+        <BrowserRouter>
+        <Routes>
+          
+        <Route element={<PublicRoute/>}>
+          <Route path='/' element={<Landing/>}></Route>
+        </Route>
 
-      <Route element={<ProtectedRoute/>}>
-        <Route path='/products' element={<Products/>}></Route>
-        <Route path='/products/:id/items' element={<Items/>}></Route>
-      </Route>
+        <Route element={<ProtectedRoute/>}>
+          <Route path='/products' element={<Products/>}></Route>
+          <Route path='/products/:id/items' element={<Items/>}></Route>
+          <Route path='/profile' element={<Profile/>}></Route>
+        </Route>
+          
         
-      
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </MenuProvider>
   </>
   );
 }
