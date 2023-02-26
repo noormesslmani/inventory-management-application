@@ -15,6 +15,7 @@ class ProfileController extends Controller
             $profileValidators = new ProfileValidators();
             $validated = $profileValidators-> validateEditProfileRequest($request);
 
+            //check if an image is sent in the request
             if($request->base64_image ){
                 $userService= new UserService();
                 $image_path= $userService->decodeImage($request->base64_image);
@@ -34,7 +35,7 @@ class ProfileController extends Controller
             ], 200);
         } 
         catch (ValidationException $e) {
-            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
+            return response()->json(['status' => 'fail','message' => 'Unprocessable Input '], 422);
         }
         catch (Exception $e) {
             return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
@@ -48,7 +49,8 @@ class ProfileController extends Controller
             $profileValidators = new ProfileValidators();
             $validated = $profileValidators-> validateResetPasswordRequest($request);
           
-            if(Hash::check($request->password, Auth::user()->password)){
+            //check if old password matches user's password
+            if(Hash::check($request->old_password, Auth::user()->password)){
              
                 Auth::user()->update([
                     'password' => bcrypt($request->new_password)
@@ -58,11 +60,12 @@ class ProfileController extends Controller
                 ], 200);
             }
             
-            return response()->json(['status' => 'fail','message' => 'password is not correct'], 401);
+            //failing to match password
+            return response()->json(['status' => 'fail','message' => 'You entered a wrong password'], 401);
             
         } 
         catch (ValidationException $e) {
-            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
+            return response()->json(['status' => 'fail','message' => 'Invalid input data'], 422);
         }
         catch (Exception $e) {
             return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);

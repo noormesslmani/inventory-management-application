@@ -77,7 +77,7 @@ class ItemController extends Controller
             ], 201);
         } 
         catch (ValidationException $e) {
-            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
+            return response()->json(['status' => 'fail','message' => 'Invalid input data '], 422);
         }
         catch (NotFoundException $e) {
             return response()->json(['status' => 'fail','message' => 'Product not found'], 404);
@@ -166,15 +166,15 @@ class ItemController extends Controller
             $this->authorizeProduct($item->product_id);
 
             //updating the item
-            $updatedItem=$item->update($validated);;
+            $item->update($validated);;
 
             return response()->json([
                 'status' => 'success',
-                'data'=>$updatedItem
+                'data'=>$item
             ], 200);
         } 
         catch (ValidationException $e) {
-            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
+            return response()->json(['status' => 'fail','message' => 'Invalid input data'], 422);
         }
         catch (ActionForbiddenException $e) {
             return response()->json(['status' => 'fail','message' => 'Action forbidden'], 403);

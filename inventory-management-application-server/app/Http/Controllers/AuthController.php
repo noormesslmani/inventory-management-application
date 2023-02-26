@@ -20,7 +20,7 @@ class AuthController extends Controller
 
             //validate request
             $authValidators = new AuthValidators();
-            $validated = $authValidators-> validateEditProfileRequest($request);
+            $validated = $authValidators-> validateRegisterRequest($request);
         
             //create user
             $newUser= User::createUser(
@@ -33,7 +33,7 @@ class AuthController extends Controller
             ], 201);
         } 
         catch (ValidationException $e) {
-            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
+            return response()->json(['status' => 'fail','message' => 'Invalid input data'], 422);
         }
         catch (Exception $e) {
             return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
@@ -50,7 +50,7 @@ class AuthController extends Controller
         
             //check credentials and create token
             if (! $token = auth()->attempt($validated)) {
-                return response()->json(['status' => 'fail','message' => 'Account does not exist'], 401);
+                return response()->json(['status' => 'fail','message' => 'Email and password do not match'], 401);
             }
 
             return response()->json([
@@ -63,23 +63,14 @@ class AuthController extends Controller
             ], 200);
         } 
         catch (ValidationException $e) {
-            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
+            return response()->json(['status' => 'fail','message' => 'Invalid input data'], 422);
         }
         catch (Exception $e) {
             return response()->json(['status' => 'fail','message' => 'Somethig Went Wrong'], 500);
         }  
         
     }
-    
-    public function logout()
-    {
-        Auth::logout();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Successfully logged out',
-        ],200);
-    }
 
-    
+
 
 }

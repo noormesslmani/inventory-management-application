@@ -75,7 +75,7 @@ class ProductController extends Controller
             ], 200);
         } 
         catch (ValidationException $e) {
-            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
+            return response()->json(['status' => 'fail','message' => 'Invalid input data '], 422);
         }
         catch (ConflictException $e) {
             return response()->json(['status' => 'fail','message' => 'Product type already exist'], 409);
@@ -119,11 +119,11 @@ class ProductController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data'=> new ProductResource($updatedProduct)
+                'data'=> new ProductResource($product)
             ], 200);
         } 
         catch (ValidationException $e) {
-            return response()->json(['status' => 'fail','message' => 'Unprocessable Content '], 422);
+            return response()->json(['status' => 'fail','message' => 'Invalid input data '], 422);
         }
         catch (ActionForbiddenException $e) {
             return response()->json(['status' => 'fail','message' => 'Action forbidden'], 403);
