@@ -22,3 +22,18 @@ export const handleSaveChanges=async (setIsloading, user,base64,setUser, setIsRe
             setIsReadOnly(true);
         }
 }
+export const handleChangePassword=async(setIsloading, setIsReadOnly, data)=>{
+    console.log(data)
+    try{
+        await changePassowrd(data);
+        
+        toast.success('Password successfully changed');
+    }
+    catch (error){
+        toast.error(error.response.data.message);
+    }
+    finally{
+        setIsloading(false);
+        setIsReadOnly(true);
+    }
+}
