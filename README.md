@@ -90,89 +90,60 @@ Here's a brief high-level overview of the tech stacks the app uses:
 
 
 
-
-
----------------
-
-
-
 > This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
 
 ### Prerequisites
 
-- Download and Install [Composer](https://getcomposer.org/download/)
-- Download and Install [XAMPP](https://www.apachefriends.org/download.html)
-
-- npm
+* npm
   ```sh
   npm install npm@latest -g
   ```
-- Expo CLI
-  ```sh
-  npm install --global expo-cli
 
+* [Composer](https://getcomposer.org/download/)
+*  Apache HTTP Server, example : [XAMPP](https://www.apachefriends.org/)
 
 ### Installation
 
-1. Clone the repo
-
+1. Open your XAMPP control panel and start Apache and MySQL
+2. Clone the repo
    ```sh
-   git clone https://github.com/noormesslmani/MeetALocal.git
+   git clone https://github.com/noormesslmani/inventory-management-application
    ```
-#### To Run The Mobile App
-
-1. Navigate to MeetALocal-rn folder and install dependencies
-   ```sh
-   cd MeetALocal/MeetALocal-rn
-   npm install
+3. Go to the inventory-management-application-server folder
    ```
-2. Run the start up command
-   ```sh
-   npm start
+   cd inventory-management-application-server
    ```
-3. Place your IP address in constants/address
-
-4. Create an [API key](https://developers.google.com/maps/documentation/javascript/get-api-key) and place it in .env file
-
-5. Scan the generated QR code with your camera (ios) or through the Expo Go application (android)
-
-#### To Run The Desktop App
-
-1. Navigate to admin-panel folder and install dependencies
-   ```sh
-   cd MeetALocal/admin-panel
-   npm install
+4. Install composer packages
    ```
-2. Place your IP address in Network/API
+   composer install
+   ```   
+5. Rename the .env.example file in the inventory-management-application-server folder to .env and specify your database name
 
-3. Run the start up command
-   ```sh
-   npm start
+6. Generate a secret key generate a jwt secret key
    ```
-
-#### To Run Laravel Server on your machine
-
-1. Create a database locally named meetalocaldb
-
-2. Navigate to the backend folder
-   ```sh
-   cd MeetALocal/MeetALocal-Backend
+     php artisan jwt:secret
    ```
-3. Install dependencies
-   ```sh
-   composer install 
+7. Migrate the database
    ```
-4. Rename .env.example to .env and inside the .env file 
-   - Insert the db name as follow -> DB_DATABASE= -> DB_DATABASE=meetalocal
-   
-5. Run migration
-   ```sh
    php artisan migrate
    ```
-   
-6. Start the Server
-   ```sh
-   php artisan serve --port 8000 --host "Your IP"
+8. Seed the database
    ```
+   php artisan db:seed
+   ```
+   
+9. Go to the frontend folder
+      ```
+      cd frontend
+      ```  
+10. Install the dependencies
+      ```
+      npm install
+      ```    
+11. creating a .env file and add REACT_APP_BASE_URL as following:
+      ```
+      REACT_APP_BASE_URL: 'IP_address:host/prefix'
+      ```   
+
